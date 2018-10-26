@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Coinz</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoidGlhbnl1d2FuZyIsImEiOiJjam5sd2NmZGMxa2VtM3BvM3FudDcwZnJzIn0.kADibR7aksBn2NXfg4aSgA</string>
 </resources>
