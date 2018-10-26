@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -56,6 +58,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         Intent intent = getIntent();
         jsonString = intent.getStringExtra("GEO_JSON");
+        Button btnWallet = (Button) findViewById(R.id.btnWallet);
+        btnWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapActivity.this, WalletActivity.class));
+            }
+        });
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
