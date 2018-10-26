@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
@@ -21,6 +23,7 @@ import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -41,7 +44,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LocationEngine locationEngine;
     private LocationLayerPlugin locationLayerPlugin;
     private Location originLocation;
-    private String tag = "INFO";
+    private String tag = "MAP";
     private String jsonString;
     private Icon iconDolr, iconPenny, iconQuid, iconShil, iconBlack;
 
@@ -57,11 +60,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
-        Icon iconDolr = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_dolr));
-        Icon iconQuid = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_quid));
-        Icon iconPenny = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_penny));
-        Icon iconShil = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_shil));
-        Icon iconBlack = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_24px));
+        iconDolr = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_dolr));
+        iconQuid = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_quid));
+        iconPenny = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_penny));
+        iconShil = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_shil));
+        iconBlack = iconFactory.fromBitmap(SVGtoBitmap.getBitmap(MapActivity.this,R.drawable.ic_baseline_room_24px));
     }
 
     @Override
@@ -73,11 +76,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // Set user interface options
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
+            map.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+                    Coin coin = Coin.getCoinByMarker(marker);
+                    if (coin != null && Coin.inRanged(originLocation, coin)) {
+                        Toast.makeText(MapActivity.this, "Collected " + Double.toString(coin.getValue()) + " " + coin.getCurrency(), Toast.LENGTH_LONG).show();
+                        Coin.collectedCoinsList.add(coin);
+                        map.removeMarker(marker);
+                    } else if (coin == null) {
+                        Log.d(tag, "Unknown coins");
+                    } else {
+                        Toast.makeText(MapActivity.this, "Out of Range", Toast.LENGTH_LONG).show();
+                    }
+                    return true;
+                }
+            });
             // Make location information available
             enableLocation();
         }
         FeatureCollection featureCollection = FeatureCollection.fromJson(jsonString);
-        IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
 
         for (Feature feature : Objects.requireNonNull(featureCollection.features())){
             Geometry geometry = feature.geometry();
@@ -85,26 +103,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             JsonObject properties =  feature.properties();
             String currency = Objects.requireNonNull(properties).get("currency").getAsString();
             String symbol = Objects.requireNonNull(properties).get("marker-symbol").getAsString();
+            String id = Objects.requireNonNull(properties).get("id").getAsString();
+            String value = Objects.requireNonNull(properties).get("value").getAsString();
 
             if (point == null) throw new AssertionError();
             List<Double> coordinates = point.coordinates();
-            map.addMarker(new MarkerOptions().icon(getIconByName(symbol)).title(symbol).snippet(currency).position(new LatLng(coordinates.get(1), coordinates.get(0))));
+            Marker marker = map.addMarker(new MarkerOptions().icon(getIconByName(currency)).title(currency).snippet(symbol).position(new LatLng(coordinates.get(1), coordinates.get(0))));
+            Coin.coinsList.add(new Coin(id, Coin.generateCurrencyByName(currency),Double.parseDouble(value),marker));
         }
-        MarkerOptions options = new MarkerOptions();
     }
 
     private Icon getIconByName(String name){
-        if (name.equals("DOLR")){
-            return iconDolr;
-        } else if (name.equals("QUID")){
-            return iconQuid;
-        } else if (name.equals("PENNY")){
-            return iconPenny;
-        } else if (name.equals("SHIL")){
-            return iconShil;
-        } else {
-            Log.d(tag, "Unknown coins");
-            return iconBlack;
+        switch (name) {
+            case "DOLR":
+                return iconDolr;
+            case "QUID":
+                return iconQuid;
+            case "PENY":
+                return iconPenny;
+            case "SHIL":
+                return iconShil;
+            default:
+                Log.d(tag, "Unknown coins");
+                return iconBlack;
         }
     }
 
