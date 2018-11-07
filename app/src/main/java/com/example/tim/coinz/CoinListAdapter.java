@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,9 +17,11 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
+        public ImageView mImageView;
         public MyViewHolder(View v) {
             super(v);
             mTextView = itemView.findViewById(R.id.message);
+            mImageView = itemView.findViewById(R.id.coin_icon);
         }
     }
 
@@ -31,8 +34,7 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
     public CoinListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View view = mInflater.inflate(R.layout.coin_list_row, parent, false);
-        MyViewHolder vh = new MyViewHolder(view);
-        return vh;
+        return new MyViewHolder(view);
     }
 
     @Override
@@ -42,6 +44,16 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         Coin coin = coinList.get(position);
         String s = String.format("%s: %f", coin.getCurrency().toString(),  coin.getValue());
         holder.mTextView.setText(s);
+        switch (coin.getCurrency()){
+            case DOLR: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_dolr);
+                break;
+            case QUID: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_quid);
+                break;
+            case PENY: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_penny);
+                break;
+            case SHIL: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_shil);
+                break;
+        }
     }
 
     @Override
