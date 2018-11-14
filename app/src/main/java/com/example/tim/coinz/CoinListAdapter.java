@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,10 +19,15 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         // each data item is just a string in this case
         public TextView mTextView;
         public ImageView mImageView;
+        public Button btnBank;
+        public Button btnGift;
+
         public MyViewHolder(View v) {
             super(v);
             mTextView = itemView.findViewById(R.id.message);
             mImageView = itemView.findViewById(R.id.coin_icon);
+            btnBank = itemView.findViewById(R.id.btnBank);
+            btnGift = itemView.findViewById(R.id.btnGift);
         }
     }
 
@@ -54,6 +60,15 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
             case SHIL: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_shil);
                 break;
         }
+        holder.btnBank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                coinList.remove(position);
+                //setEmptyViewVisibility();
+                notifyItemRemoved(position);
+                Bank.theBank.saveCoin(coin);
+            }
+        });
     }
 
     @Override

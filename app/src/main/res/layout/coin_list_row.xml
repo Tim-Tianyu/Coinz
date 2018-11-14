@@ -11,11 +11,27 @@
         android:id="@+id/coin_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.2"
         app:srcCompat="@drawable/ic_baseline_room_24px" />
     <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0.5"
         android:textSize="20sp" />
 
+    <Button
+        android:id="@+id/btnBank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.01"
+        android:text="Deposit" />
+
+    <Button
+        android:id="@+id/btnGift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.01"
+        android:text="Gift" />
 </LinearLayout>

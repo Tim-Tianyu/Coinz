@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Bank {
+    public static Bank theBank = new Bank(10,0,1,1,1,1,0,0,0,0,0);
+
     private int dailyLimit, dailyCoins;
     private double valueDOLR, valueQUID,valueSHIL,valuePENY,valueGold;
     private double rateDOLR, rateQUID,rateSHIL,ratePENY;
 
-    public Bank (int dailyLimit,double valueDOLR, double valueQUID, double valueSHIL, double valuePENY,
-                 double valueGold, double rateDOLR, double rateQUID, double rateSHIL, double ratePENY, int dailyCoins) {
+    public Bank (int dailyLimit, int dailyCoins, double rateDOLR, double rateQUID, double rateSHIL, double ratePENY,
+                 double valueGold, double valueDOLR, double valueQUID, double valueSHIL, double valuePENY) {
         this.dailyLimit = dailyLimit;
         this.dailyCoins = dailyCoins;
         this.valueDOLR = valueDOLR;

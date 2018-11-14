@@ -65,6 +65,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 startActivity(new Intent(MapActivity.this, WalletActivity.class));
             }
         });
+        Button btnBank = (Button) findViewById(R.id.btnBank);
+        btnBank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapActivity.this, BankActivity.class));
+            }
+        });
+
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);

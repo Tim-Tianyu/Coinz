@@ -16,6 +16,7 @@
         mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
+
     </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
@@ -33,5 +34,21 @@
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="@+id/mapView"
         mapbox:layout_constraintVertical_bias="0.932" />
+
+    <Button
+        android:id="@+id/btnBank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Bank"
+        mapbox:layout_constraintBottom_toTopOf="@+id/btnWallet"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintHorizontal_bias="0.971"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
+        mapbox:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
