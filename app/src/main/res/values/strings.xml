@@ -5,4 +5,6 @@
     <string name="DOLR">DOLR</string>
     <string name="QUID">QUID</string>
     <string name="PENNY">PENNY</string>
+    <string name="transfer">Transfer</string>
+    <string name="GOLD">GOLD</string>
 </resources>

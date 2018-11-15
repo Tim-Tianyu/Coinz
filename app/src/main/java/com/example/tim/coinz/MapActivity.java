@@ -36,6 +36,9 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -58,6 +61,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         Intent intent = getIntent();
         jsonString = intent.getStringExtra("GEO_JSON");
+        double rateShil, rateDolr, ratePenny, rateQuid;
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject rates = jsonObject.getJSONObject("rates");
+            rateShil = rates.getDouble("SHIL");
+            rateDolr = rates.getDouble("DOLR");
+            ratePenny = rates.getDouble("PENNY");
+            rateQuid = rates.getDouble("QUID");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            rateShil = 1.0;
+            rateDolr = 1.0;
+            ratePenny = 1.0;
+            rateQuid = 1.0;
+        }
+
+        Bank.theBank = new Bank(20, 0,rateDolr, rateQuid, rateShil, ratePenny, 5,10,10,10,10);
+
         Button btnWallet = (Button) findViewById(R.id.btnWallet);
         btnWallet.setOnClickListener(new View.OnClickListener() {
             @Override

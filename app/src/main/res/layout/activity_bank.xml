@@ -7,7 +7,7 @@
     tools:context=".BankActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/activity_bank_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,89 +20,84 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/img_gold"
+            android:id="@+id/activity_bank_img_gold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_baseline_room_24px" />
 
         <TextView
-            android:id="@+id/txt_gold_value"
+            android:id="@+id/activity_bank_txt_gold_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/img_dolr"
+            android:id="@+id/activity_bank_img_dolr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_24px" />
+            app:srcCompat="@drawable/ic_baseline_room_dolr" />
 
         <TextView
-            android:id="@+id/txt_dolr_value"
+            android:id="@+id/activity_bank_txt_dolr_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/img_penny"
+            android:id="@+id/activity_bank_img_penny"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_24px" />
+            app:srcCompat="@drawable/ic_baseline_room_penny" />
 
         <TextView
-            android:id="@+id/txt_penny_value"
+            android:id="@+id/activity_bank_txt_penny_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/img_quid"
+            android:id="@+id/activity_bank_img_quid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_24px" />
+            app:srcCompat="@drawable/ic_baseline_room_quid" />
 
         <TextView
-            android:id="@+id/txt_quid_value"
+            android:id="@+id/activity_bank_txt_quid_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/img_shil"
+            android:id="@+id/activity_bank_img_shil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_24px" />
+            app:srcCompat="@drawable/ic_baseline_room_shil" />
 
         <TextView
-            android:id="@+id/txt_shil_value"
+            android:id="@+id/activity_bank_txt_shil_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 
     <TableLayout
-        android:id="@+id/tblGold"
+        android:id="@+id/activity_bank_tbl_gold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tblCurrency"
+        app:layout_constraintBottom_toTopOf="@+id/activity_bank_tbl_currency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/activity_bank_ll"
         app:layout_constraintVertical_bias="0.3">
 
         <TableRow
@@ -110,10 +105,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/txtGoldValue"
+                android:id="@+id/activity_bank_txt_gold_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="@string/GOLD" />
         </TableRow>
 
         <TableRow
@@ -121,7 +116,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
-                android:id="@+id/seekGoldValue"
+                android:id="@+id/activity_bank_sb_gold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -135,25 +130,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RadioButton
-                android:id="@+id/rbDOLR"
+                android:id="@+id/activity_bank_rb_dolr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text= "@string/DOLR"
                 android:layout_marginHorizontal="8dp"/>
             <RadioButton
-                android:id="@+id/rbPENNY"
+                android:id="@+id/activity_bank_rb_penny"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/PENNY"
                 android:layout_marginHorizontal="8dp"/>
             <RadioButton
-                android:id="@+id/rbQUID"
+                android:id="@+id/activity_bank_rb_quid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/QUID"
                 android:layout_marginHorizontal="8dp"/>
             <RadioButton
-                android:id="@+id/rbSHIL"
+                android:id="@+id/activity_bank_rb_shil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/SHIL"
@@ -162,22 +157,22 @@
     </TableLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/activity_bank_btn_transfer_gold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/tblCurrency"
+        android:text="@string/transfer"
+        app:layout_constraintBottom_toTopOf="@+id/activity_bank_tbl_currency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tblGold"
+        app:layout_constraintTop_toBottomOf="@+id/activity_bank_tbl_gold"
         app:layout_constraintVertical_bias="0.5" />
 
     <TableLayout
-        android:id="@+id/tblCurrency"
+        android:id="@+id/activity_bank_tbl_currency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -195,10 +190,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/activity_bank_txt_dolr_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="@string/DOLR" />
         </TableRow>
 
         <TableRow
@@ -206,7 +201,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
-                android:id="@+id/seekBar1"
+                android:id="@+id/activity_bank_sb_dolr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -221,10 +216,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/activity_bank_txt_penny_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="@string/PENNY" />
         </TableRow>
 
         <TableRow
@@ -232,7 +227,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
-                android:id="@+id/seekBar2"
+                android:id="@+id/activity_bank_sb_penny"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -247,10 +242,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/activity_bank_txt_quid_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="@string/QUID" />
         </TableRow>
 
         <TableRow
@@ -258,7 +253,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
-                android:id="@+id/seekBar3"
+                android:id="@+id/activity_bank_sb_quid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -273,10 +268,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/activity_bank_txt_shil_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="@string/SHIL" />
         </TableRow>
 
         <TableRow
@@ -284,7 +279,7 @@
             android:layout_height="match_parent">
 
             <SeekBar
-                android:id="@+id/seekBar4"
+                android:id="@+id/activity_bank_sb_shil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -296,19 +291,19 @@
     </TableLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/activity_bank_btn_transfer_currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:text="@string/transfer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tblCurrency" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_bank_tbl_currency" />
 
 
 
