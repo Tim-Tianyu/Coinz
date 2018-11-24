@@ -129,30 +129,37 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <RadioButton
-                android:id="@+id/activity_bank_rb_dolr"
+            <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text= "@string/DOLR"
-                android:layout_marginHorizontal="8dp"/>
-            <RadioButton
-                android:id="@+id/activity_bank_rb_penny"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/PENNY"
-                android:layout_marginHorizontal="8dp"/>
-            <RadioButton
-                android:id="@+id/activity_bank_rb_quid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/QUID"
-                android:layout_marginHorizontal="8dp"/>
-            <RadioButton
-                android:id="@+id/activity_bank_rb_shil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/SHIL"
-                android:layout_marginHorizontal="8dp"/>
+                tools:layout_editor_absoluteX="79dp"
+                tools:layout_editor_absoluteY="188dp"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/activity_bank_rb_dolr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text= "@string/DOLR"
+                    android:layout_marginHorizontal="8dp"/>
+                <RadioButton
+                    android:id="@+id/activity_bank_rb_penny"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/PENNY"
+                    android:layout_marginHorizontal="8dp"/>
+                <RadioButton
+                    android:id="@+id/activity_bank_rb_quid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/QUID"
+                    android:layout_marginHorizontal="8dp"/>
+                <RadioButton
+                    android:id="@+id/activity_bank_rb_shil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/SHIL"
+                    android:layout_marginHorizontal="8dp"/>
+            </RadioGroup>
         </TableRow>
     </TableLayout>
 
@@ -304,10 +311,6 @@
         app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_bank_tbl_currency" />
-
-
-
-
 
 
 </android.support.constraint.ConstraintLayout>

@@ -158,7 +158,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return iconDolr;
             case "QUID":
                 return iconQuid;
-            case "PENY":
+            case "PENNY":
                 return iconPenny;
             case "SHIL":
                 return iconShil;

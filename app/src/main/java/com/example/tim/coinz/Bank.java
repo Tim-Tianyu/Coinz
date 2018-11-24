@@ -10,8 +10,8 @@ public class Bank {
     private double valueDOLR, valueQUID,valueSHIL,valuePENY,valueGold;
     private double rateDOLR, rateQUID,rateSHIL,ratePENY;
 
-    public Bank (int dailyLimit, int dailyCoins, double rateDOLR, double rateQUID, double rateSHIL, double ratePENY,
-                 double valueGold, double valueDOLR, double valueQUID, double valueSHIL, double valuePENY) {
+    public Bank (int dailyLimit, int dailyCoins, double rateDOLR, double ratePENY, double rateQUID, double rateSHIL,
+                 double valueGold, double valueDOLR, double valuePENY, double valueQUID, double valueSHIL) {
         this.dailyLimit = dailyLimit;
         this.dailyCoins = dailyCoins;
         this.valueDOLR = valueDOLR;
@@ -29,7 +29,7 @@ public class Bank {
         if (dailyCoins >= dailyLimit) return false;
 
         switch (coin.getCurrency()){
-            case PENY: valuePENY += coin.getValue();
+            case PENNY: valuePENY += coin.getValue();
                 break;
             case QUID: valueQUID += coin.getValue();
                 break;
@@ -48,7 +48,7 @@ public class Bank {
         map.put(Coin.currencies.DOLR, valueDOLR);
         map.put(Coin.currencies.QUID, valueQUID);
         map.put(Coin.currencies.SHIL, valueSHIL);
-        map.put(Coin.currencies.PENY, valuePENY);
+        map.put(Coin.currencies.PENNY, valuePENY);
         return map;
     }
 
@@ -57,7 +57,7 @@ public class Bank {
         map.put(Coin.currencies.DOLR, rateDOLR);
         map.put(Coin.currencies.QUID, rateQUID);
         map.put(Coin.currencies.SHIL, rateSHIL);
-        map.put(Coin.currencies.PENY, ratePENY);
+        map.put(Coin.currencies.PENNY, ratePENY);
         return map;
     }
 
@@ -65,7 +65,7 @@ public class Bank {
         return valueGold;
     }
 
-    public boolean exchangeCurrenciesToGold(double valuePENY, double valueSHIL, double valueQUID, double valueDOLR){
+    public boolean exchangeCurrenciesToGold(double valueDOLR, double valuePENY, double valueSHIL, double valueQUID){
         if (this.valueQUID < valueQUID || this.valuePENY < valuePENY || this.valueSHIL < valueSHIL || this.valueDOLR < valueDOLR) return false;
         this.valueGold += rateQUID * valueQUID + rateSHIL * valueSHIL + ratePENY * valuePENY + rateDOLR * valueDOLR;
         this.valueQUID -= valueQUID;
@@ -79,7 +79,7 @@ public class Bank {
         if (this.valueGold < valueGold) return false;
         this.valueGold -= valueGold;
         switch (currency){
-            case PENY: valuePENY += valueGold / ratePENY;
+            case PENNY: valuePENY += valueGold / ratePENY;
                 break;
             case QUID: valueQUID += valueGold / rateQUID;
                 break;

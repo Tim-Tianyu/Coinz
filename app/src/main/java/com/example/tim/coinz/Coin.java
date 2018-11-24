@@ -13,7 +13,7 @@ public class Coin {
     static double range = 50;
 
     public enum currencies {
-        QUID, SHIL, PENY, DOLR, UNKNOWN
+        QUID, SHIL, PENNY, DOLR, UNKNOWN
     }
 
     public static Coin getCoinByMarker(Marker marker) {
@@ -33,8 +33,8 @@ public class Coin {
                 return currencies.DOLR;
             case "QUID":
                 return currencies.QUID;
-            case "PENY":
-                return currencies.PENY;
+            case "PENNY":
+                return currencies.PENNY;
             case "SHIL":
                 return currencies.SHIL;
             default:
