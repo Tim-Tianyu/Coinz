@@ -1,7 +1,6 @@
 package com.example.tim.coinz;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -61,7 +60,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         Intent intent = getIntent();
         jsonString = intent.getStringExtra("GEO_JSON");
-        double rateShil, rateDolr, ratePenny, rateQuid;
+        double rateShil, rateDolr, ratePenny, rateQuid;;
 
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -76,6 +75,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             rateDolr = 1.0;
             ratePenny = 1.0;
             rateQuid = 1.0;
+        }
+
+        FeatureCollection featureCollection = FeatureCollection.fromJson(jsonString);
+        for (Feature feature : Objects.requireNonNull(featureCollection.features())){
+            Geometry geometry = feature.geometry();
+            Point point = (Point) geometry;
+            JsonObject properties =  feature.properties();
+            String currency = Objects.requireNonNull(properties).get("currency").getAsString();
+            String symbol = Objects.requireNonNull(properties).get("marker-symbol").getAsString();
+            String id = Objects.requireNonNull(properties).get("id").getAsString();
+            String value = Objects.requireNonNull(properties).get("value").getAsString();
+
+            if (point == null) throw new AssertionError();
+            List<Double> coordinates = point.coordinates();
+            LatLng position = new LatLng(coordinates.get(1), coordinates.get(0));
+            Coin.coinsList.add(new Coin(id, Double.parseDouble(value), currency, symbol, position));
         }
 
         Bank.theBank = new Bank(20, 0,rateDolr, rateQuid, rateShil, ratePenny, 5,10,10,10,10);
@@ -134,21 +149,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // Make location information available
             enableLocation();
         }
-        FeatureCollection featureCollection = FeatureCollection.fromJson(jsonString);
-
-        for (Feature feature : Objects.requireNonNull(featureCollection.features())){
-            Geometry geometry = feature.geometry();
-            Point point = (Point) geometry;
-            JsonObject properties =  feature.properties();
-            String currency = Objects.requireNonNull(properties).get("currency").getAsString();
-            String symbol = Objects.requireNonNull(properties).get("marker-symbol").getAsString();
-            String id = Objects.requireNonNull(properties).get("id").getAsString();
-            String value = Objects.requireNonNull(properties).get("value").getAsString();
-
-            if (point == null) throw new AssertionError();
-            List<Double> coordinates = point.coordinates();
-            Marker marker = map.addMarker(new MarkerOptions().icon(getIconByName(currency)).title(currency).snippet(symbol).position(new LatLng(coordinates.get(1), coordinates.get(0))));
-            Coin.coinsList.add(new Coin(id, Coin.generateCurrencyByName(currency),Double.parseDouble(value),marker));
+        for (Coin coin : Coin.coinsList){
+            Marker marker = map.addMarker(new MarkerOptions().icon(getIconByName(coin.getCurrency().name())).title(coin.getCurrency().name()).snippet(coin.getSymbol()).position(coin.getPosition()));
+            coin.setMarker(marker);
         }
     }
 

@@ -10,7 +10,12 @@ import java.util.ArrayList;
 public class Coin {
     static ArrayList<Coin> coinsList = new ArrayList<>();
     static ArrayList<Coin> collectedCoinsList = new ArrayList<>();
-    static double range = 50;
+    private String id;
+    private currencies currency;
+    private double value;
+    private Marker marker;
+    private LatLng position;
+    private String symbol;
 
     public enum currencies {
         QUID, SHIL, PENNY, DOLR, UNKNOWN
@@ -24,6 +29,7 @@ public class Coin {
     }
 
     public static boolean inRanged(Location location, Coin coin){
+        double range = 50;
         return coin.marker.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
     }
 
@@ -42,21 +48,13 @@ public class Coin {
         }
     }
 
-    private String id;
-    private currencies currency;
-    private double value;
-    private Marker marker;
 
-
-    public Coin (String id, currencies currency , double value, Marker marker) {
-        this.currency = currency;
+    public Coin (String id, double value, String currency, String symbol, LatLng position) {
+        this.currency = Coin.generateCurrencyByName(currency);
         this.id = id;
         this.value = value;
-        this.marker = marker;
-    }
-
-    public currencies getCurrency() {
-        return currency;
+        this.symbol = symbol;
+        this.position = position;
     }
 
     public String getId() {
@@ -65,5 +63,21 @@ public class Coin {
 
     public double getValue() {
         return value;
+    }
+
+    public currencies getCurrency() {
+        return currency;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public LatLng getPosition() {
+        return position;
+    }
+
+    public void setMarker(Marker marker) {
+        this.marker = marker;
     }
 }
