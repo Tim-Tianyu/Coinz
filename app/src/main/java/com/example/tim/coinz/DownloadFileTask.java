@@ -20,9 +20,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
-    private Context current;
+    private LoadActivity current;
 
-    public DownloadFileTask(Context current){
+    public DownloadFileTask(LoadActivity current){
         this.current = current;
     }
     @Override
@@ -57,7 +57,6 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        //DownloadCompleteRunner.downloadComplete(result);
         Intent intent = new Intent(current, MapActivity.class);
         intent.putExtra("GEO_JSON", result);
         current.startActivity(intent);

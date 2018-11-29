@@ -51,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null && currentUser.isEmailVerified()) {
-            startActivity(new Intent(this, LoadActivity.class));
+            Intent intent = new Intent(MainActivity.this, LoadActivity.class);
+            intent.putExtra("userId", currentUser.getUid());
+            startActivity(intent);
         }
     }
 
@@ -68,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             assert user != null;
                             if (user.isEmailVerified()) {
-                                startActivity(new Intent(MainActivity.this, LoadActivity.class));
+                                Intent intent = new Intent(MainActivity.this, LoadActivity.class);
+                                intent.putExtra("userId", user.getUid());
+                                startActivity(intent);
                             }
                         } else {
                             // If sign in fails, display a message to the user.
@@ -102,9 +106,5 @@ public class MainActivity extends AppCompatActivity {
                         // ...
                     }
                 });
-    }
-
-    public void boo(){
-        return;
     }
 }

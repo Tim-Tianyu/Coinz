@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -15,8 +16,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public class FirebaseListener {
-    static FirebaseListener data = new FirebaseListener();
-    private static String TAG = "DATABASE";
+    //static FirebaseListener data = new FirebaseListener();
+    private static final String TAG = "FirebaseListener";
     private static Boolean isUserDownload = false;
     private static Boolean isFriendsDownload = false;
     private static Boolean isSentGiftsDownload = false;
@@ -29,26 +30,24 @@ public class FirebaseListener {
     static ArrayList<User> friends = new ArrayList<>();
     static ArrayList<Request> sentRequests = new ArrayList<>();
     static ArrayList<Request> receivedRequests = new ArrayList<>();
-    static Set<String> friendsId;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void downloadData(String userId){
+    public void downloadData(LoadActivity activity, String userId){
         isUserDownload = false;
         isFriendsDownload = false;
         isSentGiftsDownload = false;
         isReceivedGiftsDownload = false;
         isSentRequestsDownload = false;
         isReceivedRequestsDownload = false;
-        downloadUser(userId);
-        downloadFriends(userId);
-        downloadSentGifts(userId);
-        downloadReceivedGifts(userId);
-        downloadSentRequests(userId);
-        downloadReceivedRequests(userId);
-
+        downloadUser(activity, userId);
+        downloadFriends(activity, userId);
+        downloadSentGifts(activity, userId);
+        downloadReceivedGifts(activity, userId);
+        downloadSentRequests(activity, userId);
+        downloadReceivedRequests(activity, userId);
     }
 
-    private void downloadUser(String userId){
+    private void downloadUser(LoadActivity activity, String userId){
         db.collection("USER").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -57,6 +56,8 @@ public class FirebaseListener {
                     try {
                         currentUser = new User(result.getId(), result.getDouble("Gold"), result.getString("Name"));
                         isUserDownload = true;
+                        Log.i(TAG, "currentUser download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -68,7 +69,7 @@ public class FirebaseListener {
     }
 
 
-    private void downloadFriends(String userId) {
+    private void downloadFriends(LoadActivity activity, String userId) {
         db.collection("USER").whereEqualTo(String.format("FriendList.List.%s", userId), true).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -78,6 +79,8 @@ public class FirebaseListener {
                             friends.add(new User(document.getId(), document.getDouble("Gold"), document.getString("Name")));
                         }
                         isFriendsDownload = true;
+                        Log.i(TAG, "friends download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -88,8 +91,9 @@ public class FirebaseListener {
         });
     }
 
-    private void downloadSentGifts(String userId) {
-        db.collection("GIFT").whereEqualTo("Sender", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void downloadSentGifts(LoadActivity activity, String userId) {
+        DocumentReference userRef = db.collection("USER").document(userId);
+        db.collection("GIFT").whereEqualTo("Sender", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -98,6 +102,8 @@ public class FirebaseListener {
                             sentGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId()));
                         }
                         isSentGiftsDownload = true;
+                        Log.i(TAG, "sentGifts download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -108,8 +114,9 @@ public class FirebaseListener {
         });
     }
 
-    private void downloadReceivedGifts(String userId) {
-        db.collection("GIFT").whereEqualTo("Receiver", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void downloadReceivedGifts(LoadActivity activity, String userId) {
+        DocumentReference userRef = db.collection("USER").document(userId);
+        db.collection("GIFT").whereEqualTo("Receiver", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -118,6 +125,8 @@ public class FirebaseListener {
                             receivedGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId()));
                         }
                         isReceivedGiftsDownload = true;
+                        Log.i(TAG, "receivedGifts download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -128,16 +137,20 @@ public class FirebaseListener {
         });
     }
 
-    private void downloadSentRequests(String userId) {
-        db.collection("GIFT").whereEqualTo("Sender", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void downloadSentRequests(LoadActivity activity, String userId) {
+        DocumentReference userRef = db.collection("USER").document(userId);
+        db.collection("FRIEND_REQUEST").whereEqualTo("Sender", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            sentRequests.add(new Request(document.getId(), document.getString("Sender"), document.getString("Receiver"), Request.DoubleToStatus(document.getDouble("Status"))));
+                            document.getDouble("Status");
+                            sentRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status"))));
                         }
                         isSentRequestsDownload = true;
+                        Log.i(TAG, "sentRequests download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -148,16 +161,19 @@ public class FirebaseListener {
         });
     }
 
-    private void downloadReceivedRequests(String userId) {
-        db.collection("GIFT").whereEqualTo("Sender", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void downloadReceivedRequests(LoadActivity activity, String userId) {
+        DocumentReference userRef = db.collection("USER").document(userId);
+        db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            receivedRequests.add(new Request(document.getId(), document.getString("Sender"), document.getString("Receiver"), Request.DoubleToStatus(document.getDouble("Status"))));
+                            receivedRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status"))));
                         }
                         isReceivedRequestsDownload = true;
+                        Log.i(TAG, "receivedRequests download complete");
+                        downloadStateChecking(activity);
                     } catch (NullPointerException ex){
                         Log.w(TAG, "Null pointer when retriving result.", ex);
                     }
@@ -168,9 +184,9 @@ public class FirebaseListener {
         });
     }
 
-    private void downloadStateChecking() {
+    private void downloadStateChecking(LoadActivity activity) {
         if (isUserDownload && isFriendsDownload && isSentGiftsDownload && isReceivedGiftsDownload && isSentRequestsDownload && isReceivedRequestsDownload){
-            //TODO
+            activity.onCompleteDownloadFirebaseData();
         }
     }
 }
