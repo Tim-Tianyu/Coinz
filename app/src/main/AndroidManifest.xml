@@ -24,7 +24,8 @@
         <activity android:name=".LoadActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".WalletActivity" />
-        <activity android:name=".BankActivity"></activity>
+        <activity android:name=".BankActivity" />
+        <activity android:name=".FriendActivity"></activity>
     </application>
 
 </manifest>
