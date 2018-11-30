@@ -67,7 +67,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             JSONObject rates = jsonObject.getJSONObject("rates");
             rateShil = rates.getDouble("SHIL");
             rateDolr = rates.getDouble("DOLR");
-            ratePenny = rates.getDouble("PENNY");
+            ratePenny = rates.getDouble("PENY");
             rateQuid = rates.getDouble("QUID");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -168,7 +168,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return iconDolr;
             case "QUID":
                 return iconQuid;
-            case "PENNY":
+            case "PENY":
                 return iconPenny;
             case "SHIL":
                 return iconShil;

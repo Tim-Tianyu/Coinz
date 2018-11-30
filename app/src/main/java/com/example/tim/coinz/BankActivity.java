@@ -58,7 +58,7 @@ public class BankActivity extends AppCompatActivity {
     private void refreshLabels(){
         Map<Coin.currencies, Double> values = bank.getValues();
         valueDolr.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.DOLR)));
-        valuePenny.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.PENNY)));
+        valuePenny.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.PENY)));
         valueQuid.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.QUID)));
         valueShil.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.SHIL)));
         valueGold.setText(String.format(Locale.UK,"%1$.2f" , bank.getValueGold()));
@@ -143,7 +143,7 @@ public class BankActivity extends AppCompatActivity {
                     currency = Coin.currencies.DOLR;
                     radioDolr.setChecked(false);
                 } else if (radioPenny.isChecked()){
-                    currency = Coin.currencies.PENNY;
+                    currency = Coin.currencies.PENY;
                     radioPenny.setChecked(false);
                 } else if (radioQuid.isChecked()){
                     currency = Coin.currencies.QUID;
@@ -178,7 +178,7 @@ public class BankActivity extends AppCompatActivity {
                 try {
                     if (bank.exchangeCurrenciesToGold(
                             percentageDolr * values.get(Coin.currencies.DOLR),
-                            percentagePenny * values.get(Coin.currencies.PENNY),
+                            percentagePenny * values.get(Coin.currencies.PENY),
                             percentageShil * values.get(Coin.currencies.SHIL),
                             percentageQuid * values.get(Coin.currencies.QUID)))
                     {

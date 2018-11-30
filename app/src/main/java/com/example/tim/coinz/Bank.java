@@ -1,5 +1,12 @@
 package com.example.tim.coinz;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +36,7 @@ public class Bank {
         if (dailyCoins >= dailyLimit) return false;
 
         switch (coin.getCurrency()){
-            case PENNY: valuePENY += coin.getValue();
+            case PENY: valuePENY += coin.getValue();
                 break;
             case QUID: valueQUID += coin.getValue();
                 break;
@@ -48,7 +55,7 @@ public class Bank {
         map.put(Coin.currencies.DOLR, valueDOLR);
         map.put(Coin.currencies.QUID, valueQUID);
         map.put(Coin.currencies.SHIL, valueSHIL);
-        map.put(Coin.currencies.PENNY, valuePENY);
+        map.put(Coin.currencies.PENY, valuePENY);
         return map;
     }
 
@@ -57,7 +64,7 @@ public class Bank {
         map.put(Coin.currencies.DOLR, rateDOLR);
         map.put(Coin.currencies.QUID, rateQUID);
         map.put(Coin.currencies.SHIL, rateSHIL);
-        map.put(Coin.currencies.PENNY, ratePENY);
+        map.put(Coin.currencies.PENY, ratePENY);
         return map;
     }
 
@@ -79,7 +86,7 @@ public class Bank {
         if (this.valueGold < valueGold) return false;
         this.valueGold -= valueGold;
         switch (currency){
-            case PENNY: valuePENY += valueGold / ratePENY;
+            case PENY: valuePENY += valueGold / ratePENY;
                 break;
             case QUID: valueQUID += valueGold / rateQUID;
                 break;
@@ -90,5 +97,19 @@ public class Bank {
             case UNKNOWN: return false;
         }
         return true;
+    }
+
+    public void receiveGift(ReceiveGiftListAdapter current, Gift gift, int position) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("GIFT").document(gift.getGiftId()).update("IsReceived", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    current.removeItem(position);
+                } else {
+                    Log.w("BANK", "reveive gift fail");
+                }
+            }
+        });
     }
 }

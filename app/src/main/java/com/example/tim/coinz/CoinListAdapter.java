@@ -55,7 +55,7 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
                 break;
             case QUID: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_quid);
                 break;
-            case PENNY: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_penny);
+            case PENY: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_penny);
                 break;
             case SHIL: holder.mImageView.setImageResource(R.drawable.ic_baseline_room_shil);
                 break;

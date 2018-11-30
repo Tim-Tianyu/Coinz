@@ -10,9 +10,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftListAdapter.MyViewHolder> {
     private ArrayList<Gift> giftList;
+    private ArrayList<User> friendList;
     private LayoutInflater mInflater;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -29,9 +31,10 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         }
     }
 
-    public ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList){
+    public ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList, ArrayList<User> friendList){
         this.mInflater = LayoutInflater.from(context);
         this.giftList = giftList;
+        this.friendList = friendList;
     }
 
     @NonNull
@@ -43,7 +46,25 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        //TODO
+        Gift gift = giftList.get(i);
+        User sender = User.findUserById(friendList,gift.getSenderId());
+        if (sender != null) myViewHolder.txtName.setText(String.format(Locale.UK,"%s", sender.getName()));
+        else myViewHolder.txtName.setText("Unknown friend");
+
+        myViewHolder.txtValue.setText(String.format(Locale.UK,"%1$.2f", gift.getValue()));
+        myViewHolder.btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = myViewHolder.getAdapterPosition();
+                Bank.theBank.receiveGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
+            }
+        });
+    }
+
+    public void removeItem(int position){
+        giftList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, giftList.size());
     }
 
     @Override

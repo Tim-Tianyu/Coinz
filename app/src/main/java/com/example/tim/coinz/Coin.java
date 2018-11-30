@@ -18,7 +18,7 @@ public class Coin {
     private String symbol;
 
     public enum currencies {
-        QUID, SHIL, PENNY, DOLR, UNKNOWN
+        QUID, SHIL, PENY, DOLR, UNKNOWN
     }
 
     public static Coin getCoinByMarker(Marker marker) {
@@ -39,8 +39,8 @@ public class Coin {
                 return currencies.DOLR;
             case "QUID":
                 return currencies.QUID;
-            case "PENNY":
-                return currencies.PENNY;
+            case "PENY":
+                return currencies.PENY;
             case "SHIL":
                 return currencies.SHIL;
             default:
