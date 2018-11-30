@@ -24,4 +24,13 @@ public class User{
     public String getName() {
         return name;
     }
+
+    public static User findUserById (ArrayList<User> userList, String userId) {
+        for (User user : userList){
+            if (userId.equals(user.userId)){
+                return user;
+            }
+        }
+        return null;
+    }
 }

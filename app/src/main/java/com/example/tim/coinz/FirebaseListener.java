@@ -13,7 +13,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 public class FirebaseListener {
     //static FirebaseListener data = new FirebaseListener();
@@ -70,7 +69,8 @@ public class FirebaseListener {
 
 
     private void downloadFriends(LoadActivity activity, String userId) {
-        db.collection("USER").whereEqualTo(String.format("FriendList.List.%s", userId), true).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        DocumentReference userRef = db.collection("USER").document(userId);
+        db.collection("USER").whereArrayContains("FriendList", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -99,7 +99,7 @@ public class FirebaseListener {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            sentGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId()));
+                            sentGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), document.getTimestamp("Time")));
                         }
                         isSentGiftsDownload = true;
                         Log.i(TAG, "sentGifts download complete");
@@ -122,7 +122,7 @@ public class FirebaseListener {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            receivedGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId()));
+                            receivedGifts.add(new Gift(document.getId(), document.getDouble("Value"), document.getBoolean("IsReceived"), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), document.getTimestamp("Time")));
                         }
                         isReceivedGiftsDownload = true;
                         Log.i(TAG, "receivedGifts download complete");
@@ -146,7 +146,7 @@ public class FirebaseListener {
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                             document.getDouble("Status");
-                            sentRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status"))));
+                            sentRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status")), document.getTimestamp("Time")));
                         }
                         isSentRequestsDownload = true;
                         Log.i(TAG, "sentRequests download complete");
@@ -169,7 +169,7 @@ public class FirebaseListener {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            receivedRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status"))));
+                            receivedRequests.add(new Request(document.getId(), document.getDocumentReference("Sender").getId(), document.getDocumentReference("Receiver").getId(), Request.DoubleToStatus(document.getDouble("Status")), document.getTimestamp("Time")));
                         }
                         isReceivedRequestsDownload = true;
                         Log.i(TAG, "receivedRequests download complete");
@@ -188,5 +188,9 @@ public class FirebaseListener {
         if (isUserDownload && isFriendsDownload && isSentGiftsDownload && isReceivedGiftsDownload && isSentRequestsDownload && isReceivedRequestsDownload){
             activity.onCompleteDownloadFirebaseData();
         }
+    }
+
+    private void downloadFail(LoadActivity activity) {
+        //TODO
     }
 }

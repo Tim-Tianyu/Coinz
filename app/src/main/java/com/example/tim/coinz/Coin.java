@@ -48,7 +48,6 @@ public class Coin {
         }
     }
 
-
     public Coin (String id, double value, String currency, String symbol, LatLng position) {
         this.currency = Coin.generateCurrencyByName(currency);
         this.id = id;

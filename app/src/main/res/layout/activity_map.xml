@@ -7,7 +7,7 @@
     tools:context=".MapActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
+        android:id="@+id/activity_map_mv_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         mapbox:mapbox_cameraTargetLat="-3.189181"
@@ -20,7 +20,7 @@
     </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
-        android:id="@+id/btnWallet"
+        android:id="@+id/activity_map_btn_wallet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,11 +32,11 @@
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.971"
         mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toTopOf="@+id/mapView"
+        mapbox:layout_constraintTop_toTopOf="@+id/activity_map_mv_map"
         mapbox:layout_constraintVertical_bias="0.932" />
 
     <Button
-        android:id="@+id/btnBank"
+        android:id="@+id/activity_map_btn_bank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -44,11 +44,27 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="Bank"
-        mapbox:layout_constraintBottom_toTopOf="@+id/btnWallet"
+        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_wallet"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.971"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/activity_map_btn_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Friends"
+        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_bank"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintHorizontal_bias="0.971"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
+        mapbox:layout_constraintVertical_bias="1.0"/>
 
 </android.support.constraint.ConstraintLayout>

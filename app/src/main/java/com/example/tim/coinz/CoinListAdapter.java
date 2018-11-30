@@ -26,7 +26,7 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
             super(v);
             mTextView = itemView.findViewById(R.id.message);
             mImageView = itemView.findViewById(R.id.coin_icon);
-            btnBank = itemView.findViewById(R.id.btnBank);
+            btnBank = itemView.findViewById(R.id.activity_map_btn_bank);
             btnGift = itemView.findViewById(R.id.btnGift);
         }
     }
@@ -63,9 +63,11 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         holder.btnBank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int position = holder.getAdapterPosition();
                 coinList.remove(position);
                 //setEmptyViewVisibility();
                 notifyItemRemoved(position);
+                notifyItemRangeChanged(position, coinList.size());
                 Bank.theBank.saveCoin(coin);
             }
         });

@@ -95,22 +95,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         Bank.theBank = new Bank(20, 0,rateDolr, rateQuid, rateShil, ratePenny, 5,10,10,10,10);
 
-        Button btnWallet = (Button) findViewById(R.id.btnWallet);
+        Button btnWallet = (Button) findViewById(R.id.activity_map_btn_wallet);
         btnWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MapActivity.this, WalletActivity.class));
             }
         });
-        Button btnBank = (Button) findViewById(R.id.btnBank);
+        Button btnBank = (Button) findViewById(R.id.activity_map_btn_bank);
         btnBank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MapActivity.this, BankActivity.class));
             }
         });
+        Button btnFriend = (Button) findViewById(R.id.activity_map_btn_friends);
+        btnFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapActivity.this, FriendActivity.class));
+            }
+        });
 
-        mapView = (MapView) findViewById(R.id.mapView);
+        mapView = (MapView) findViewById(R.id.activity_map_mv_map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);

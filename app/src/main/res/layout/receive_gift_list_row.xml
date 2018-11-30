@@ -7,31 +7,24 @@
     android:orientation="horizontal"
     android:padding="10dp">
 
-    <ImageView
-        android:id="@+id/coin_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="0.2"
-        app:srcCompat="@drawable/ic_baseline_room_24px" />
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/receive_gift_list_txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:textSize="20sp" />
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/receive_gift_list_txt_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:textSize="20sp"/>
 
     <Button
-        android:id="@+id/activity_map_btn_bank"
+        android:id="@+id/receive_gift_list_btn_receive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.01"
-        android:text="Deposit" />
-
-    <Button
-        android:id="@+id/btnGift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.01"
-        android:text="Gift" />
+        android:text="receive" />
 </LinearLayout>
