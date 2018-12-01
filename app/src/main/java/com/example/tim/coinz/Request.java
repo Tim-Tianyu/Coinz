@@ -20,6 +20,8 @@ public class Request {
     private static final Double PENDING = 0.0;
     private static final Double ACCEPT = 1.0;
     private static final Double DENY = 2.0;
+    static ArrayList<Request> sentRequests = new ArrayList<>();
+    static ArrayList<Request> receivedRequests = new ArrayList<>();
 
     public Request(String requestId, String senderId, String receiverId, Status status, Timestamp timestamp) {
         this.requestId = requestId;

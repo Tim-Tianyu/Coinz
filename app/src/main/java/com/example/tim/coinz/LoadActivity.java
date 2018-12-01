@@ -20,12 +20,6 @@ public class LoadActivity extends AppCompatActivity {
     }
 
     public void onCompleteDownloadFirebaseData() {
-        User user = FirebaseListener.currentUser;
-        ArrayList<User> friends = FirebaseListener.friends;
-        ArrayList<Gift> gift1 = FirebaseListener.sentGifts;
-        ArrayList<Gift> gift2 = FirebaseListener.receivedGifts;
-        ArrayList<Request> request1 = FirebaseListener.receivedRequests;
-        ArrayList<Request> request2 = FirebaseListener.sentRequests;
         // start download map after firebase data is finished
         DownloadFileTask task = new DownloadFileTask(LoadActivity.this);
         task.execute("http://homepages.inf.ed.ac.uk/stg/coinz/2018/10/03/coinzmap.geojson");

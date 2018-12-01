@@ -50,5 +50,6 @@
         android:text="Friends"
         app:layout_constraintBottom_toTopOf="@+id/activity_friend_rv_friends"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp"/>
 </android.support.constraint.ConstraintLayout>

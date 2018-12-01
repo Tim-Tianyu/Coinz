@@ -26,7 +26,7 @@ public class FriendActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new FriendListAdapter(this, FirebaseListener.friends);
+        mAdapter = new FriendListAdapter(this, User.friends);
         mRecyclerView.setAdapter(mAdapter);
 
         Button btnAdd = (Button) findViewById(R.id.activity_friend_btn_add);

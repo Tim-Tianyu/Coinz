@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ public class BankActivity extends AppCompatActivity {
     private SeekBar seekGold, seekDolr, seekPenny, seekQuid, seekShil;
     private RadioButton radioDolr, radioPenny, radioQuid, radioShil;
     private Bank bank = Bank.theBank;
+    private static final String TAG = "BANK";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,16 +143,12 @@ public class BankActivity extends AppCompatActivity {
                 Coin.currencies currency;
                 if (radioDolr.isChecked()) {
                     currency = Coin.currencies.DOLR;
-                    radioDolr.setChecked(false);
                 } else if (radioPenny.isChecked()){
                     currency = Coin.currencies.PENY;
-                    radioPenny.setChecked(false);
                 } else if (radioQuid.isChecked()){
                     currency = Coin.currencies.QUID;
-                    radioQuid.setChecked(false);
                 } else if (radioShil.isChecked()){
                     currency = Coin.currencies.SHIL;
-                    radioShil.setChecked(false);
                 } else{
                     Toast.makeText(BankActivity.this,"Please select a currency", Toast.LENGTH_SHORT).show();
                     return;

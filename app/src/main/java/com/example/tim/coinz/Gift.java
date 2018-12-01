@@ -11,6 +11,8 @@ public class Gift{
     private String senderId;
     private String receiverId;
     private Timestamp timestamp;
+    static ArrayList<Gift> sentGifts = new ArrayList<>();
+    static ArrayList<Gift> receivedGifts = new ArrayList<>();
 
     public Gift(String giftId, Double value, Boolean recevied, String senderId, String receiverId, Timestamp timestamp) {
         this.giftId = giftId;

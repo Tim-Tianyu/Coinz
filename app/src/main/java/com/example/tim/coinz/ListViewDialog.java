@@ -14,9 +14,10 @@ public class ListViewDialog extends Dialog {
     private RecyclerView.LayoutManager mLayoutManager;
     private Context context;
 
-    public ListViewDialog(Context context) {
+    public ListViewDialog(Context context, RecyclerView.Adapter adapter) {
         super(context);
         this.context = context;
+        this.mAdapter = adapter;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class ListViewDialog extends Dialog {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new ReceiveGiftListAdapter(context, FirebaseListener.receivedGifts, FirebaseListener.friends);
+        //mAdapter = new ReceiveGiftListAdapter(context, FirebaseListener.receivedGifts, FirebaseListener.friends);
         mRecyclerView.setAdapter(mAdapter);
 
         Button btnClose = (Button) findViewById(R.id.list_view_dialog_btn_close);

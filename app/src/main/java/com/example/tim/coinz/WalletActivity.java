@@ -33,11 +33,11 @@ public class WalletActivity extends AppCompatActivity {
         mAdapter = new CoinListAdapter(this, Coin.collectedCoinsList);
         mRecyclerView.setAdapter(mAdapter);
 
-        Button btn = (Button) findViewById(R.id.activity_wallet_btn_receive);
-        btn.setOnClickListener(new View.OnClickListener() {
+        Button btnReceive = (Button) findViewById(R.id.activity_wallet_btn_receive);
+        btnReceive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListViewDialog dialog = new ListViewDialog(WalletActivity.this);
+                ListViewDialog dialog = new ListViewDialog(WalletActivity.this, new ReceiveGiftListAdapter(WalletActivity.this, Gift.receivedGifts, User.friends));
                 dialog.show();
             }
         });
