@@ -58,7 +58,7 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 User friend = friendList.get(position);
-                Coin.sendCoinAsGift(dialog, giftCoin, friend, position);
+                Coin.sendCoinAsGift(dialog, adapter, giftCoin, friend);
             }
         });
     }

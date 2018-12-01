@@ -94,7 +94,7 @@ public class Coin {
         this.marker = marker;
     }
 
-    static void sendCoinAsGift(Dialog dialog, Coin coin, User friend, int position){
+    static void sendCoinAsGift(Dialog dialog, CoinListAdapter adapter, Coin coin, User friend){
         if (coin.currency.equals(currencies.UNKNOWN)) return;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference userCollection = db.collection("USER");
@@ -114,6 +114,8 @@ public class Coin {
                         String giftId = documentReference.getId();
                         Gift.sentGifts.add(new Gift(giftId, value, false, User.currentUser.getUserId(), friend.getUserId(), timestamp));
                         dialog.dismiss();
+                        adapter.removeCoin(coin);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

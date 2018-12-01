@@ -112,7 +112,8 @@ public class FirebaseListener {
 
     private void downloadReceivedGifts(LoadActivity activity, String userId) {
         DocumentReference userRef = db.collection("USER").document(userId);
-        db.collection("GIFT").whereEqualTo("Receiver", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        // only need unreceived gift to receive gift
+        db.collection("GIFT").whereEqualTo("Receiver", userRef).whereEqualTo("IsReceived", false).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -159,7 +160,8 @@ public class FirebaseListener {
 
     private void downloadReceivedRequests(LoadActivity activity, String userId) {
         DocumentReference userRef = db.collection("USER").document(userId);
-        db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", userRef).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        // only need pending request for received request
+        db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", userRef).whereEqualTo("Status", Request.StatusToDouble(Request.Status.PENDING)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
