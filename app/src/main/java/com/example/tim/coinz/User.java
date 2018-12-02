@@ -24,6 +24,7 @@ public class User{
     private String name;
     static User currentUser;
     static ArrayList<User> friends = new ArrayList<>();
+    private static final String TAG = "USER";
 
     public User(String userId, double goldValue, String name){
         this.userId = userId;
@@ -89,7 +90,7 @@ public class User{
             @Override
             public void onFailure(@NonNull Exception e) {
                 // TODO handle failure
-                Log.w("USER", e);
+                Log.w(TAG, e);
             }
         });
     }
@@ -107,9 +108,31 @@ public class User{
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // TODO handle failure
-                        Log.w("USER", e);
+                        Log.w(TAG, e);
                     }
                 });
 
+    }
+
+    static void deleteFriend(FriendListAdapter adapter, User friend, int position) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("USER");
+        WriteBatch writeBatch = db.batch();
+        writeBatch.update(collectionReference.document(friend.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(User.currentUser.getUserId())));
+        writeBatch.update(collectionReference.document(User.currentUser.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(friend.getUserId())));
+        writeBatch.commit()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        adapter.removeItem(position);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // TODO handle failure
+                        Log.w(TAG, e);
+                    }
+                });
     }
 }

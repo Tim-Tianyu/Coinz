@@ -42,13 +42,26 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         User friend = friendList.get(i);
         holder.txtName.setText(friend.getName());
-        // TODO holder.btnDelete
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                User.deleteFriend(FriendListAdapter.this, friendList.get(position), position);
+                // TODO need refactor all the adapters to remove redundant parameters like "friendList.get(position)"
+            }
+        });
     }
 
-    public void addItem(User friend){
+    void addItem(User friend){
         friendList.add(friend);
         notifyItemInserted(friendList.size()-1);
         notifyItemRangeChanged(friendList.size()-1, friendList.size());
+    }
+
+    void removeItem(int position) {
+        friendList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, friendList.size());
     }
 
     @Override
