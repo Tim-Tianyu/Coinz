@@ -11,11 +11,15 @@ public class FriendActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private AddFriendDialog addFriendDialog;
+    private ListViewDialog listViewDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend);
+        addFriendDialog = new AddFriendDialog(FriendActivity.this);
+        listViewDialog  = new ListViewDialog(FriendActivity.this, new RequestListAdapter(FriendActivity.this, (FriendListAdapter) mAdapter, Request.receivedRequests));
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_friend_rv_friends);
 
         // use this setting to improve performance if you know that changes
@@ -31,14 +35,18 @@ public class FriendActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         Button btnAdd = (Button) findViewById(R.id.activity_friend_btn_add);
-        //TODO btnAdd event
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFriendDialog.show();
+            }
+        });
 
         Button btnRequests = (Button) findViewById(R.id.activity_friend_btn_requests);
         btnRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListViewDialog dialog = new ListViewDialog(FriendActivity.this, new RequestListAdapter(FriendActivity.this, (FriendListAdapter) mAdapter, Request.receivedRequests));
-                dialog.show();
+                listViewDialog.show();
             }
         });
     }

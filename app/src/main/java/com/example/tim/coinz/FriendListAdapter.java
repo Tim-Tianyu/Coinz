@@ -1,6 +1,8 @@
 package com.example.tim.coinz;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder>{
     private ArrayList<User> friendList;
     private LayoutInflater mInflater;
+    private AlertDialog dialog;
+    private int currentPosition = 0;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -30,6 +34,23 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     public FriendListAdapter(Context context, ArrayList<User> friendList) {
         this.mInflater = LayoutInflater.from(context);
         this.friendList = friendList;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+        dialog = builder.setTitle("Delete Friend")
+                .setMessage("Are you sure you want to delete this friend?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        User.deleteFriend(FriendListAdapter.this, friendList.get(currentPosition), currentPosition);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .create();
     }
 
     @Override
@@ -45,8 +66,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                User.deleteFriend(FriendListAdapter.this, friendList.get(position), position);
+                currentPosition = holder.getAdapterPosition();
+                dialog.show();
                 // TODO need refactor all the adapters to remove redundant parameters like "friendList.get(position)"
             }
         });
