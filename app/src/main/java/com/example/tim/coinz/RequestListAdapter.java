@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.MyViewHolder>{
     private ArrayList<Request> receivedRequestList;
     private LayoutInflater mInflater;
+    private FriendListAdapter friendListAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -29,9 +30,10 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         }
     }
 
-    public RequestListAdapter(Context context, ArrayList<Request> receivedRequestList){
+    public RequestListAdapter(Context context, FriendListAdapter friendListAdapter, ArrayList<Request> receivedRequestList){
         this.mInflater = LayoutInflater.from(context);
         this.receivedRequestList = receivedRequestList;
+        this.friendListAdapter = friendListAdapter;
     }
 
     @Override
@@ -48,13 +50,14 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             @Override
             public void onClick(View v) {
                 int position = myViewHolder.getAdapterPosition();
-                User.acceptFriendRequest(RequestListAdapter.this, request, position);
+                User.acceptFriendRequest(RequestListAdapter.this, friendListAdapter, request, position);
             }
         });
         myViewHolder.btnReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                int position = myViewHolder.getAdapterPosition();
+                User.rejectFriendRequest(RequestListAdapter.this, request, position);
             }
         });
     }

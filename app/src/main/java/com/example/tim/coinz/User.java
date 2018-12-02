@@ -2,6 +2,7 @@ package com.example.tim.coinz;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,7 +66,7 @@ public class User{
         return filtered;
     }
 
-    static void acceptFriendRequest(RequestListAdapter adapter, Request request, int position) {
+    static void acceptFriendRequest(RequestListAdapter requestListAdapter, FriendListAdapter friendListAdapter, Request request, int position) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("USER");
         db.runTransaction(new Transaction.Function<DocumentSnapshot>() {
@@ -73,6 +74,7 @@ public class User{
             public DocumentSnapshot apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
                 DocumentSnapshot documentSnapshot = transaction.get(collectionReference.document(request.getSenderId()));
                 transaction.update(collectionReference.document(User.currentUser.getUserId()), "FriendList", FieldValue.arrayUnion(collectionReference.document(request.getSenderId())));
+                transaction.update(collectionReference.document(request.getSenderId()), "FriendList", FieldValue.arrayUnion(collectionReference.document(User.currentUser.getUserId())));
                 transaction.update(db.collection("FRIEND_REQUEST").document(request.getRequestId()), "Status", Request.StatusToDouble(Request.Status.ACCEPT));
                 return documentSnapshot;
             }
@@ -80,18 +82,34 @@ public class User{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 // TODO null pointer handler
-                friends.add(new User(documentSnapshot.getId(), documentSnapshot.getDouble("Gold"), documentSnapshot.getString("Name")));
-                adapter.removeItem(position);
+                requestListAdapter.removeItem(position);
+                friendListAdapter.addItem(new User(documentSnapshot.getId(), documentSnapshot.getDouble("Gold"), documentSnapshot.getString("Name")));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //TODO
+                // TODO handle failure
+                Log.w("USER", e);
             }
         });
     }
 
     static void rejectFriendRequest(RequestListAdapter adapter, Request request, int position) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("FRIEND_REQUEST").document(request.getRequestId()).update("Status", Request.StatusToDouble(Request.Status.DENY))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        adapter.removeItem(position);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // TODO handle failure
+                        Log.w("USER", e);
+                    }
+                });
+
     }
 }

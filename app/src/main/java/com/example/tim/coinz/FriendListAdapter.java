@@ -45,6 +45,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         // TODO holder.btnDelete
     }
 
+    public void addItem(User friend){
+        friendList.add(friend);
+        notifyItemInserted(friendList.size()-1);
+        notifyItemRangeChanged(friendList.size()-1, friendList.size());
+    }
+
     @Override
     public int getItemCount() {
         return friendList.size();

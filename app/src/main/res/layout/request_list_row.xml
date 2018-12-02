@@ -9,22 +9,22 @@
 
     <TextView
         android:id="@+id/request_list_txt_id"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="0.9"
         android:textSize="12sp"/>
 
     <Button
         android:id="@+id/request_list_btn_reject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.01"
-        android:text="reject" />
+        android:text="reject"
+        android:textSize="12sp"/>
 
     <Button
         android:id="@+id/request_list_btn_accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.01"
-        android:text="accept" />
+        android:text="accept"
+        android:textSize="12sp"/>
 </LinearLayout>
