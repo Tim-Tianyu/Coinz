@@ -51,21 +51,21 @@ public class Request {
         return timestamp;
     }
 
-    public static Status DoubleToStatus(Double num) {
+    static Status DoubleToStatus(Double num) {
         if (num.equals(PENDING)) return Status.PENDING;
         else if (num.equals(ACCEPT)) return Status.ACCEPT;
         else if (num.equals(DENY)) return Status.PENDING;
         else return null;
     }
 
-    public static Double StatusToDouble(Status status){
+    static Double StatusToDouble(Status status){
         if (status.equals(Status.ACCEPT)) return ACCEPT;
         else if (status.equals(Status.DENY)) return DENY;
         else if (status.equals(Status.PENDING)) return PENDING;
         else return null; // this should be impossible
     }
 
-    public static Request findRequestById (ArrayList<Request> requestList, String requestId) {
+    static Request findRequestById (ArrayList<Request> requestList, String requestId) {
         for (Request request : requestList){
             if (requestId.equals(request.requestId)){
                 return request;
@@ -73,4 +73,23 @@ public class Request {
         }
         return null;
     }
+
+    static Request findReceivedRequestBySenderId(String senderId) {
+        for (Request request : receivedRequests){
+            if (senderId.equals(request.senderId)){
+                return request;
+            }
+        }
+        return null;
+    }
+
+    static Request findSentRequestByReceiverId(String receiverId){
+        for (Request request : sentRequests){
+            if (receiverId.equals(request.receiverId)){
+                return request;
+            }
+        }
+        return null;
+    }
+
 }
