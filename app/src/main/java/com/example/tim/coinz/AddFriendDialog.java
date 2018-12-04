@@ -55,7 +55,7 @@ public class AddFriendDialog extends Dialog {
                 } else if (Request.findSentRequestByReceiverId(userId) != null) {
                     Toast.makeText(context, "Request already sent", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (User.findUserById(User.friends, userId) != null){
+                } else if (User.findFriendById(userId) != null){
                     Toast.makeText(context, "Already a friend of yours", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (Request.findReceivedRequestBySenderId( userId) != null) {
@@ -69,7 +69,7 @@ public class AddFriendDialog extends Dialog {
                 documentReference.getPath();
 
                 Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime());
-                data.put("Status", Request.StatusToDouble(Request.Status.PENDING));
+                data.put("Status", Request.PENDING);
                 data.put("Time", timestamp);
                 data.put("Sender", collectionReference.document(User.currentUser.getUserId()));
                 data.put("Receiver", collectionReference.document(userId));

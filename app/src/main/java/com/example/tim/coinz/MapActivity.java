@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
@@ -52,12 +53,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String jsonString;
     private Icon iconDolr, iconPenny, iconQuid, iconShil, iconBlack;
 
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this,  getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_map);
+        mAuth = FirebaseAuth.getInstance();
         Intent intent = getIntent();
         jsonString = intent.getStringExtra("GEO_JSON");
         double rateShil, rateDolr, ratePenny, rateQuid;;
@@ -114,6 +118,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MapActivity.this, FriendActivity.class));
+            }
+        });
+        Button btnLogOut = (Button) findViewById(R.id.activity_map_btn_log_out);
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request.detachAllListener();
+                User.detachAllListener();
+                mAuth.signOut();
+                startActivity(new Intent(MapActivity.this, MainActivity.class));
+                FirebaseListener.clearCurrentFirestoreData();
+                finish();
             }
         });
 
@@ -304,5 +320,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

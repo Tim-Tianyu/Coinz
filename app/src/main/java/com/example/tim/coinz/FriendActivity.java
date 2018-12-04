@@ -27,8 +27,7 @@ public class FriendActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new FriendListAdapter(this, User.friends);
-        mRecyclerView.setAdapter(mAdapter);
+
 
         Button btnAdd = (Button) findViewById(R.id.activity_friend_btn_add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -43,9 +42,25 @@ public class FriendActivity extends AppCompatActivity {
         btnRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListViewDialog listViewDialog  = new ListViewDialog(FriendActivity.this, new RequestListAdapter(FriendActivity.this, (FriendListAdapter) mAdapter, Request.receivedRequests));
+                RequestListAdapter adapter = new RequestListAdapter(FriendActivity.this, (FriendListAdapter) mAdapter, Request.receivedRequests);
+                ListViewDialog listViewDialog  = new ListViewDialog(FriendActivity.this, adapter);
                 listViewDialog.show();
+                RequestListAdapter.onStartAdapter(adapter);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter = new FriendListAdapter(this, User.friends);
+        mRecyclerView.setAdapter(mAdapter);
+        FriendListAdapter.onStartAdapter((FriendListAdapter)mAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FriendListAdapter.onCurrentAdapterEnd();
     }
 }

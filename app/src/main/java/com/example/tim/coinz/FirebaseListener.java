@@ -28,6 +28,7 @@ public class FirebaseListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void downloadData(LoadActivity activity, String userId){
+        clearCurrentFirestoreData();
         isUserDownload = false;
         isFriendsDownload = false;
         isSentGiftsDownload = false;
@@ -161,7 +162,7 @@ public class FirebaseListener {
     private void downloadReceivedRequests(LoadActivity activity, String userId) {
         DocumentReference userRef = db.collection("USER").document(userId);
         // only need pending request for received request
-        db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", userRef).whereEqualTo("Status", Request.StatusToDouble(Request.Status.PENDING)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", userRef).whereEqualTo("Status", Request.PENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -184,11 +185,24 @@ public class FirebaseListener {
 
     private void downloadStateChecking(LoadActivity activity) {
         if (isUserDownload && isFriendsDownload && isSentGiftsDownload && isReceivedGiftsDownload && isSentRequestsDownload && isReceivedRequestsDownload){
+            Request.addRequestStateChangeListener();
+            Request.addReceiveRequestListener();
+            User.addFriendDeleteListener();
             activity.onCompleteDownloadFirebaseData();
         }
     }
 
     private void downloadFail(LoadActivity activity) {
         //TODO
+    }
+
+    static void clearCurrentFirestoreData(){
+        Coin.coinsList = new ArrayList<>();
+        Gift.sentGifts = new ArrayList<>();
+        Gift.receivedGifts = new ArrayList<>();
+        Request.sentRequests = new ArrayList<>();
+        Request.receivedRequests = new ArrayList<>();
+        User.friends = new ArrayList<>();
+        User.currentUser = null;
     }
 }

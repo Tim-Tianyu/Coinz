@@ -42,6 +42,7 @@ public class ListViewDialog extends Dialog {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (RequestListAdapter.class.isInstance(mAdapter)) RequestListAdapter.onCurrentAdapterEnd();
                 dismiss();
             }
         });

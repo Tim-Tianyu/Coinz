@@ -50,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null && currentUser.isEmailVerified()) {
+        // TODO currentUser.isEmailVerified()
+        if (currentUser != null) {
             Intent intent = new Intent(MainActivity.this, LoadActivity.class);
             intent.putExtra("userId", currentUser.getUid());
             startActivity(intent);
+            finish();
         }
     }
 
@@ -69,10 +71,14 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("INFO", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             assert user != null;
-                            if (user.isEmailVerified()) {
+                            // TODO currentUser.isEmailVerified()
+                            if (true) {
                                 Intent intent = new Intent(MainActivity.this, LoadActivity.class);
                                 intent.putExtra("userId", user.getUid());
                                 startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(MainActivity.this, "email not verified", Toast.LENGTH_LONG);
                             }
                         } else {
                             // If sign in fails, display a message to the user.

@@ -15,6 +15,8 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     private ArrayList<Request> receivedRequestList;
     private LayoutInflater mInflater;
     private FriendListAdapter friendListAdapter;
+    private static boolean haveFoucus;
+    private static RequestListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -68,8 +70,29 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         notifyItemRangeChanged(position, receivedRequestList.size());
     }
 
+    public void addItem(Request request){
+        receivedRequestList.add(request);
+        notifyItemInserted(receivedRequestList.size()-1);
+        notifyItemRangeChanged(receivedRequestList.size()-1, receivedRequestList.size());
+    }
+
     @Override
     public int getItemCount() {
         return receivedRequestList.size();
+    }
+
+    public static void onCurrentAdapterEnd(){
+        haveFoucus = false;
+        currentAdapter = null;
+    }
+
+    public static void onStartAdapter(RequestListAdapter adapter){
+        haveFoucus = true;
+        currentAdapter = adapter;
+    }
+
+    public static RequestListAdapter getCurrentAdapter(){
+        if (!haveFoucus) return  null;
+        return currentAdapter;
     }
 }

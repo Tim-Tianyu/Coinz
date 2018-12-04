@@ -60,5 +60,6 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         Intent intent = new Intent(current, MapActivity.class);
         intent.putExtra("GEO_JSON", result);
         current.startActivity(intent);
+        current.finish();
     }
 }

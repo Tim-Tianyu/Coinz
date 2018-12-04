@@ -18,6 +18,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     private LayoutInflater mInflater;
     private AlertDialog dialog;
     private int currentPosition = 0;
+    private static boolean haveFoucus;
+    private static FriendListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -90,4 +92,18 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         return friendList.size();
     }
 
+    public static void onCurrentAdapterEnd(){
+        haveFoucus = false;
+        currentAdapter = null;
+    }
+
+    public static void onStartAdapter(FriendListAdapter adapter){
+        haveFoucus = true;
+        currentAdapter = adapter;
+    }
+
+    public static FriendListAdapter getCurrentAdapter(){
+        if (!haveFoucus) return  null;
+        return currentAdapter;
+    }
 }

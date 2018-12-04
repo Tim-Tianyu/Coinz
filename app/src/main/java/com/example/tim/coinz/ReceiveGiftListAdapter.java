@@ -47,7 +47,7 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Gift gift = giftList.get(i);
-        User sender = User.findUserById(friendList,gift.getSenderId());
+        User sender = User.findFriendById(gift.getSenderId());
         if (sender != null) myViewHolder.txtName.setText(String.format(Locale.UK,"%s", sender.getName()));
         else myViewHolder.txtName.setText("Unknown friend");
 
