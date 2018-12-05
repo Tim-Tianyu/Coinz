@@ -14,8 +14,9 @@ import java.util.Locale;
 
 public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftListAdapter.MyViewHolder> {
     private ArrayList<Gift> giftList;
-    private ArrayList<User> friendList;
     private LayoutInflater mInflater;
+    private static boolean haveFocus;
+    private static ReceiveGiftListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -31,10 +32,9 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         }
     }
 
-    public ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList, ArrayList<User> friendList){
+    public ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList){
         this.mInflater = LayoutInflater.from(context);
         this.giftList = giftList;
-        this.friendList = friendList;
     }
 
     @NonNull
@@ -61,7 +61,13 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         });
     }
 
-    public void removeItem(int position){
+    void addItem(Gift gift){
+        giftList.add(gift);
+        notifyItemInserted(giftList.size()-1);
+        notifyItemRangeChanged(giftList.size()-1, giftList.size());
+    }
+
+    void removeItem(int position){
         giftList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, giftList.size());
@@ -70,5 +76,20 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
     @Override
     public int getItemCount() {
         return giftList.size();
+    }
+
+    static void onCurrentAdapterEnd(){
+        haveFocus = false;
+        currentAdapter = null;
+    }
+
+    static void onStartAdapter(ReceiveGiftListAdapter adapter){
+        haveFocus = true;
+        currentAdapter = adapter;
+    }
+
+    static ReceiveGiftListAdapter getCurrentAdapter(){
+        if (!haveFocus) return  null;
+        return currentAdapter;
     }
 }

@@ -154,7 +154,7 @@ public class User{
                             User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getDouble("Gold"), documentSnapshot.getString("Name"));
                             if (adapter != null) {
                                 adapter.addItem(newFriend);
-                                //TODO update friendselect adapter
+                                //TODO update friend select adapter
                             } else {
                                 friends.add(newFriend);
                             }
@@ -202,6 +202,10 @@ public class User{
                                     //TODO update friendselect adapter
                                 } else {
                                     friends.remove(position);
+                                }
+                                FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
+                                if (friendSelectListAdapter != null) {
+                                    friendSelectListAdapter.removeItemById(user.userId);
                                 }
                             }
                         }

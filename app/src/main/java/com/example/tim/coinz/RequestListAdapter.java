@@ -15,7 +15,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     private ArrayList<Request> receivedRequestList;
     private LayoutInflater mInflater;
     private FriendListAdapter friendListAdapter;
-    private static boolean haveFoucus;
+    private static boolean haveFocus;
     private static RequestListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -82,17 +82,17 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     }
 
     public static void onCurrentAdapterEnd(){
-        haveFoucus = false;
+        haveFocus = false;
         currentAdapter = null;
     }
 
     public static void onStartAdapter(RequestListAdapter adapter){
-        haveFoucus = true;
+        haveFocus = true;
         currentAdapter = adapter;
     }
 
     public static RequestListAdapter getCurrentAdapter(){
-        if (!haveFoucus) return  null;
+        if (!haveFocus) return  null;
         return currentAdapter;
     }
 }

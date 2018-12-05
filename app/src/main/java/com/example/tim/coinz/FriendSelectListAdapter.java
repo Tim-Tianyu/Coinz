@@ -18,6 +18,8 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
     private LayoutInflater mInflater;
     private Dialog dialog;
     private CoinListAdapter adapter;
+    private static boolean haveFoucus;
+    private static FriendSelectListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -63,8 +65,35 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
         });
     }
 
+    public boolean removeItemById(String userId){
+        for (User user : friendList){
+            if (userId.equals(user.getUserId())){
+                int position = friendList.indexOf(user);
+                friendList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, friendList.size());
+            }
+        }
+        return false;
+    }
+
     @Override
     public int getItemCount() {
         return friendList.size();
+    }
+
+    public static void onCurrentAdapterEnd(){
+        haveFoucus = false;
+        currentAdapter = null;
+    }
+
+    public static void onStartAdapter(FriendSelectListAdapter adapter){
+        haveFoucus = true;
+        currentAdapter = adapter;
+    }
+
+    public static FriendSelectListAdapter getCurrentAdapter(){
+        if (!haveFoucus) return  null;
+        return currentAdapter;
     }
 }

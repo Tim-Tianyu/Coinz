@@ -18,7 +18,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     private LayoutInflater mInflater;
     private AlertDialog dialog;
     private int currentPosition = 0;
-    private static boolean haveFoucus;
+    private static boolean haveFocus;
     private static FriendListAdapter currentAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -93,17 +93,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     }
 
     public static void onCurrentAdapterEnd(){
-        haveFoucus = false;
+        haveFocus = false;
         currentAdapter = null;
     }
 
     public static void onStartAdapter(FriendListAdapter adapter){
-        haveFoucus = true;
+        haveFocus = true;
         currentAdapter = adapter;
     }
 
     public static FriendListAdapter getCurrentAdapter(){
-        if (!haveFoucus) return  null;
+        if (!haveFocus) return  null;
         return currentAdapter;
     }
 }

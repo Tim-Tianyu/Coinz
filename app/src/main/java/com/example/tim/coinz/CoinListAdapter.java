@@ -81,6 +81,7 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
                 FriendSelectListAdapter adapter = new FriendSelectListAdapter(context, CoinListAdapter.this, coin, User.filterFriendsBySentGift());
                 ListViewDialog dialog = new ListViewDialog(context, adapter);
                 adapter.setDialog(dialog);
+                FriendSelectListAdapter.onStartAdapter(adapter);
                 dialog.show();
             }
         });

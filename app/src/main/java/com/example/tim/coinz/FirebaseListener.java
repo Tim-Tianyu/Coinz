@@ -188,6 +188,8 @@ public class FirebaseListener {
             Request.addRequestStateChangeListener();
             Request.addReceiveRequestListener();
             User.addFriendDeleteListener();
+            Gift.addReceiveGiftListener();
+            Gift.addSentGiftReceivedListener();
             activity.onCompleteDownloadFirebaseData();
         }
     }

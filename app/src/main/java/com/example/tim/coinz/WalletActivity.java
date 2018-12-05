@@ -1,14 +1,11 @@
 package com.example.tim.coinz;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-
-import java.util.ArrayList;
 
 public class WalletActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -37,7 +34,9 @@ public class WalletActivity extends AppCompatActivity {
         btnReceive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListViewDialog dialog = new ListViewDialog(WalletActivity.this, new ReceiveGiftListAdapter(WalletActivity.this, Gift.receivedGifts, User.friends));
+                ReceiveGiftListAdapter adapter = new ReceiveGiftListAdapter(WalletActivity.this, Gift.receivedGifts);
+                ListViewDialog dialog = new ListViewDialog(WalletActivity.this, adapter);
+                ReceiveGiftListAdapter.onStartAdapter(adapter);
                 dialog.show();
             }
         });
