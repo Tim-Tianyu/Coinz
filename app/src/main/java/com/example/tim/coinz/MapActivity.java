@@ -50,7 +50,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LocationLayerPlugin locationLayerPlugin;
     private Location originLocation;
     private String tag = "MAP";
-    private String jsonString;
     private Icon iconDolr, iconPenny, iconQuid, iconShil, iconBlack;
 
     private FirebaseAuth mAuth;
@@ -62,42 +61,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Mapbox.getInstance(this,  getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_map);
         mAuth = FirebaseAuth.getInstance();
-        Intent intent = getIntent();
-        jsonString = intent.getStringExtra("GEO_JSON");
-        double rateShil, rateDolr, ratePenny, rateQuid;;
-
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONObject rates = jsonObject.getJSONObject("rates");
-            rateShil = rates.getDouble("SHIL");
-            rateDolr = rates.getDouble("DOLR");
-            ratePenny = rates.getDouble("PENY");
-            rateQuid = rates.getDouble("QUID");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            rateShil = 1.0;
-            rateDolr = 1.0;
-            ratePenny = 1.0;
-            rateQuid = 1.0;
-        }
-
-        FeatureCollection featureCollection = FeatureCollection.fromJson(jsonString);
-        for (Feature feature : Objects.requireNonNull(featureCollection.features())){
-            Geometry geometry = feature.geometry();
-            Point point = (Point) geometry;
-            JsonObject properties =  feature.properties();
-            String currency = Objects.requireNonNull(properties).get("currency").getAsString();
-            String symbol = Objects.requireNonNull(properties).get("marker-symbol").getAsString();
-            String id = Objects.requireNonNull(properties).get("id").getAsString();
-            String value = Objects.requireNonNull(properties).get("value").getAsString();
-
-            if (point == null) throw new AssertionError();
-            List<Double> coordinates = point.coordinates();
-            LatLng position = new LatLng(coordinates.get(1), coordinates.get(0));
-            Coin.coinsList.add(new Coin(id, Double.parseDouble(value), currency, symbol, position));
-        }
-
-        Bank.theBank = new Bank(20, 0,rateDolr, rateQuid, rateShil, ratePenny, 5,10,10,10,10);
 
         Button btnWallet = (Button) findViewById(R.id.activity_map_btn_wallet);
         btnWallet.setOnClickListener(new View.OnClickListener() {

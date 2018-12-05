@@ -2,6 +2,7 @@ package com.example.tim.coinz;
 
 import android.app.Application;
 import android.app.Dialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.support.annotation.NonNull;
 
@@ -30,6 +31,13 @@ public class Coin {
     private Marker marker;
     private LatLng position;
     private String symbol;
+
+    public static final int CURRENCY_UNKNOWN = -1;
+    public static final int CURRENCY_DOLR = 0;
+    public static final int CURRENCY_PENY = 1;
+    public static final int CURRENCY_QUID = 2;
+    public static final int CURRENCY_SHIL = 3;
+    public static final int CURRENCY_GOLD = 4;
 
     public enum currencies {
         QUID, SHIL, PENY, DOLR, UNKNOWN
@@ -124,5 +132,13 @@ public class Coin {
                         //TODO
                     }
                 });
+    }
+
+    static int currencyToDouble(currencies currency){
+        if (currency.equals(currencies.DOLR)) return CURRENCY_DOLR;
+        else if (currency.equals(currencies.PENY)) return CURRENCY_PENY;
+        else if (currency.equals(currencies.QUID)) return CURRENCY_QUID;
+        else if (currency.equals(currencies.SHIL)) return CURRENCY_SHIL;
+        else return CURRENCY_UNKNOWN;
     }
 }

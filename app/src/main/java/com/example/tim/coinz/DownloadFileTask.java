@@ -1,29 +1,23 @@
 package com.example.tim.coinz;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
 
-import com.google.android.gms.common.util.IOUtils;
-
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
-    private LoadActivity current;
+    private AsyncResponse delegate = null;
 
-    public DownloadFileTask(LoadActivity current){
-        this.current = current;
+    public interface AsyncResponse {
+        void processFinish(String output);
+    }
+
+    public DownloadFileTask(AsyncResponse delegate){
+        this.delegate = delegate;
     }
     @Override
     protected String doInBackground(String... urls) {
@@ -57,9 +51,6 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        Intent intent = new Intent(current, MapActivity.class);
-        intent.putExtra("GEO_JSON", result);
-        current.startActivity(intent);
-        current.finish();
+        delegate.processFinish(result);
     }
 }

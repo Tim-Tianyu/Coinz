@@ -1,6 +1,5 @@
 package com.example.tim.coinz;
 
-import android.app.DownloadManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -50,7 +49,7 @@ public class FirebaseListener {
                 if (task.isSuccessful()) {
                     DocumentSnapshot result = task.getResult();
                     try {
-                        User.currentUser = new User(result.getId(), result.getDouble("Gold"), result.getString("Name"));
+                        User.currentUser = new User(result.getId(), result.getString("Name"));
                         isUserDownload = true;
                         Log.i(TAG, "currentUser download complete");
                         downloadStateChecking(activity);
@@ -73,7 +72,7 @@ public class FirebaseListener {
                 if (task.isSuccessful()){
                     try {
                         for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                            User.friends.add(new User(document.getId(), document.getDouble("Gold"), document.getString("Name")));
+                            User.friends.add(new User(document.getId(), document.getString("Name")));
                         }
                         isFriendsDownload = true;
                         Log.i(TAG, "friends download complete");

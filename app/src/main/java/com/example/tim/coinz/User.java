@@ -31,18 +31,13 @@ public class User{
     private static ListenerRegistration friendDeleteListener;
     private static final String TAG = "USER";
 
-    public User(String userId, double goldValue, String name){
+    public User(String userId, String name){
         this.userId = userId;
-        this.goldValue = goldValue;
         this.name = name;
     }
 
     public String getUserId() {
         return userId;
-    }
-
-    public double getGoldValue() {
-        return goldValue;
     }
 
     public String getName() {
@@ -89,7 +84,7 @@ public class User{
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 // TODO null pointer handler
                 requestListAdapter.removeItem(position);
-                friendListAdapter.addItem(new User(documentSnapshot.getId(), documentSnapshot.getDouble("Gold"), documentSnapshot.getString("Name")));
+                friendListAdapter.addItem(new User(documentSnapshot.getId(), documentSnapshot.getString("Name")));
                 // reattach friendDeleteListener
                 //addFriendDeleteListener();
             }
@@ -151,7 +146,7 @@ public class User{
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         try {
                             FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
-                            User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getDouble("Gold"), documentSnapshot.getString("Name"));
+                            User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
                             if (adapter != null) {
                                 adapter.addItem(newFriend);
                                 //TODO update friend select adapter
