@@ -7,11 +7,9 @@ import android.util.Log;
 
 import com.example.tim.coinz.FeedReaderContract.FeedEntry;
 
-import java.sql.Timestamp;
-
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
-    static final int DATABASE_VERSION = 1;
-    static final String DATABASE_NAME = "Local.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Local.db";
     private static final String TAG = "FeedReaderDbHelper";
     private static final String SQL_CREATE_TABLE_COIN =
             "CREATE TABLE " + FeedEntry.TABLE_COIN + " (" +

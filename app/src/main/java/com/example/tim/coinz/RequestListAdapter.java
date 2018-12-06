@@ -18,13 +18,13 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     private static boolean haveFocus;
     private static RequestListAdapter currentAdapter;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtId;
-        public Button btnReject;
-        public Button btnAccept;
+        TextView txtId;
+        Button btnReject;
+        Button btnAccept;
 
-        public MyViewHolder(View v) {
+        MyViewHolder(View v) {
             super(v);
             txtId = itemView.findViewById(R.id.request_list_txt_id);
             btnAccept = itemView.findViewById(R.id.request_list_btn_accept);
@@ -32,12 +32,13 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         }
     }
 
-    public RequestListAdapter(Context context, FriendListAdapter friendListAdapter, ArrayList<Request> receivedRequestList){
+    RequestListAdapter(Context context, FriendListAdapter friendListAdapter, ArrayList<Request> receivedRequestList){
         this.mInflater = LayoutInflater.from(context);
         this.receivedRequestList = receivedRequestList;
         this.friendListAdapter = friendListAdapter;
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = mInflater.inflate(R.layout.request_list_row, viewGroup, false);
@@ -48,29 +49,23 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Request request = receivedRequestList.get(i);
         myViewHolder.txtId.setText(request.getSenderId());
-        myViewHolder.btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = myViewHolder.getAdapterPosition();
-                User.acceptFriendRequest(RequestListAdapter.this, friendListAdapter, request, position);
-            }
+        myViewHolder.btnAccept.setOnClickListener(v -> {
+            int position = myViewHolder.getAdapterPosition();
+            User.acceptFriendRequest(RequestListAdapter.this, friendListAdapter, request, position);
         });
-        myViewHolder.btnReject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = myViewHolder.getAdapterPosition();
-                User.rejectFriendRequest(RequestListAdapter.this, request, position);
-            }
+        myViewHolder.btnReject.setOnClickListener(v -> {
+            int position = myViewHolder.getAdapterPosition();
+            User.rejectFriendRequest(RequestListAdapter.this, request, position);
         });
     }
 
-    public void removeItem(int position){
+    void removeItem(int position){
         receivedRequestList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, receivedRequestList.size());
     }
 
-    public void addItem(Request request){
+    void addItem(Request request){
         receivedRequestList.add(request);
         notifyItemInserted(receivedRequestList.size()-1);
         notifyItemRangeChanged(receivedRequestList.size()-1, receivedRequestList.size());
@@ -81,17 +76,17 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         return receivedRequestList.size();
     }
 
-    public static void onCurrentAdapterEnd(){
+    static void onCurrentAdapterEnd(){
         haveFocus = false;
         currentAdapter = null;
     }
 
-    public static void onStartAdapter(RequestListAdapter adapter){
+    static void onStartAdapter(RequestListAdapter adapter){
         haveFocus = true;
         currentAdapter = adapter;
     }
 
-    public static RequestListAdapter getCurrentAdapter(){
+    static RequestListAdapter getCurrentAdapter(){
         if (!haveFocus) return  null;
         return currentAdapter;
     }

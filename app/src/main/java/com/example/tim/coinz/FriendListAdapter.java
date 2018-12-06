@@ -2,7 +2,6 @@ package com.example.tim.coinz;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,36 +20,26 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     private static boolean haveFocus;
     private static FriendListAdapter currentAdapter;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtName;
-        public Button btnDelete;
+        TextView txtName;
+        Button btnDelete;
 
-        public MyViewHolder(View v) {
+        MyViewHolder(View v) {
             super(v);
             txtName = itemView.findViewById(R.id.friend_list_txt_name);
             btnDelete = itemView.findViewById(R.id.friend_list_btn_delete);
         }
     }
 
-    public FriendListAdapter(Context context, ArrayList<User> friendList) {
+    FriendListAdapter(Context context, ArrayList<User> friendList) {
         this.mInflater = LayoutInflater.from(context);
         this.friendList = friendList;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
         dialog = builder.setTitle("Delete Friend")
                 .setMessage("Are you sure you want to delete this friend?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        User.deleteFriend(FriendListAdapter.this, friendList.get(currentPosition), currentPosition);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> User.deleteFriend(friendList.get(currentPosition)))
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .create();
     }
@@ -66,13 +55,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         User friend = friendList.get(i);
         holder.txtName.setText(friend.getName());
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = holder.getAdapterPosition();
-                dialog.show();
-                // TODO need refactor all the adapters to remove redundant parameters like "friendList.get(position)"
-            }
+        holder.btnDelete.setOnClickListener(v -> {
+            currentPosition = holder.getAdapterPosition();
+            dialog.show();
+            // TODO need refactor all the adapters to remove redundant parameters like "friendList.get(position)"
         });
     }
 
@@ -93,17 +79,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         return friendList.size();
     }
 
-    public static void onCurrentAdapterEnd(){
+    static void onCurrentAdapterEnd(){
         haveFocus = false;
         currentAdapter = null;
     }
 
-    public static void onStartAdapter(FriendListAdapter adapter){
+    static void onStartAdapter(FriendListAdapter adapter){
         haveFocus = true;
         currentAdapter = adapter;
     }
 
-    public static FriendListAdapter getCurrentAdapter(){
+    static FriendListAdapter getCurrentAdapter(){
         if (!haveFocus) return  null;
         return currentAdapter;
     }

@@ -34,9 +34,7 @@ import java.util.List;
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationEngineListener, PermissionsListener {
     private MapView mapView;
     private MapboxMap map;
-    private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
-    private LocationLayerPlugin locationLayerPlugin;
     private Location originLocation;
     private String tag = "MAP";
     private Icon iconDolr, iconPenny, iconQuid, iconShil, iconBlack;
@@ -133,7 +131,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             initializeLocationLayer();
         } else {
             Log.d(tag, "Permissions are not granted");
-            permissionsManager = new PermissionsManager(this);
+            PermissionsManager permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
         }
     }
@@ -163,7 +161,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (map == null) {
                 Log.d(tag, "map is null");
             } else {
-                locationLayerPlugin = new LocationLayerPlugin(mapView, map, locationEngine);
+                LocationLayerPlugin locationLayerPlugin = new LocationLayerPlugin(mapView, map, locationEngine);
                 locationLayerPlugin.setLocationLayerEnabled(true);
                 locationLayerPlugin.setCameraMode(CameraMode.TRACKING);
                 locationLayerPlugin.setRenderMode(RenderMode.NORMAL);

@@ -18,13 +18,13 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
     private static boolean haveFocus;
     private static ReceiveGiftListAdapter currentAdapter;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtName;
-        public TextView txtValue;
-        public Button btnReceive;
+        TextView txtName;
+        TextView txtValue;
+        Button btnReceive;
 
-        public MyViewHolder(View v) {
+        MyViewHolder(View v) {
             super(v);
             txtName = itemView.findViewById(R.id.receive_gift_list_txt_name);
             txtValue = itemView.findViewById(R.id.receive_gift_list_txt_value);
@@ -32,7 +32,7 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         }
     }
 
-    public ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList){
+    ReceiveGiftListAdapter(Context context, ArrayList<Gift> giftList){
         this.mInflater = LayoutInflater.from(context);
         this.giftList = giftList;
     }
@@ -52,12 +52,9 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         else myViewHolder.txtName.setText("Unknown friend");
 
         myViewHolder.txtValue.setText(String.format(Locale.UK,"%1$.2f", gift.getValue()));
-        myViewHolder.btnReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = myViewHolder.getAdapterPosition();
-                Bank.theBank.receiveGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
-            }
+        myViewHolder.btnReceive.setOnClickListener(v -> {
+            int position = myViewHolder.getAdapterPosition();
+            Bank.theBank.receiveGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
         });
     }
 

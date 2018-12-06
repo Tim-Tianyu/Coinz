@@ -3,7 +3,6 @@ package com.example.tim.coinz;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
@@ -136,63 +135,58 @@ public class BankActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-        transferGold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Coin.Currency currency;
-                if (radioDolr.isChecked()) {
-                    currency = Coin.Currency.DOLR;
-                } else if (radioPenny.isChecked()){
-                    currency = Coin.Currency.PENY;
-                } else if (radioQuid.isChecked()){
-                    currency = Coin.Currency.QUID;
-                } else if (radioShil.isChecked()){
-                    currency = Coin.Currency.SHIL;
-                } else{
-                    Toast.makeText(BankActivity.this,"Please select a currency", Toast.LENGTH_SHORT).show();
-                    return;
-                };
-                Double percentage = 1.0 * seekGold.getProgress() / seekGold.getMax();
-                if (bank.exchangeGoldToCurrency(percentage * bank.getValueGold(),currency)){
-                    seekGold.setProgress(0);
-                    Toast.makeText(BankActivity.this,"Tansfer success", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(BankActivity.this,"Tansfer fail", Toast.LENGTH_SHORT).show();
-                }
-                refreshLabels();
+        transferGold.setOnClickListener(v -> {
+            Coin.Currency currency;
+            if (radioDolr.isChecked()) {
+                currency = Coin.Currency.DOLR;
+            } else if (radioPenny.isChecked()){
+                currency = Coin.Currency.PENY;
+            } else if (radioQuid.isChecked()){
+                currency = Coin.Currency.QUID;
+            } else if (radioShil.isChecked()){
+                currency = Coin.Currency.SHIL;
+            } else{
+                Toast.makeText(BankActivity.this,"Please select a currency", Toast.LENGTH_SHORT).show();
+                return;
             }
+            Double percentage = 1.0 * seekGold.getProgress() / seekGold.getMax();
+            if (bank.exchangeGoldToCurrency(percentage * bank.getValueGold(),currency)){
+                seekGold.setProgress(0);
+                Toast.makeText(BankActivity.this,"Tansfer success", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(BankActivity.this,"Tansfer fail", Toast.LENGTH_SHORT).show();
+            }
+            refreshLabels();
         });
 
-        transferCurrency.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Double percentageDolr, percentagePenny, percentageQuid, percentageShil;
-                percentageDolr = 1.0 * seekDolr.getProgress() / seekDolr.getMax();
-                percentagePenny = 1.0 * seekPenny.getProgress() / seekPenny.getMax();
-                percentageQuid = 1.0 * seekQuid.getProgress() / seekQuid.getMax();
-                percentageShil = 1.0 * seekShil.getProgress() / seekShil.getMax();
-                Map<Coin.Currency, Double> values = bank.getValues();
-                try {
-                    if (bank.exchangeCurrenciesToGold(
-                            percentageDolr * values.get(Coin.Currency.DOLR),
-                            percentagePenny * values.get(Coin.Currency.PENY),
-                            percentageShil * values.get(Coin.Currency.SHIL),
-                            percentageQuid * values.get(Coin.Currency.QUID)))
-                    {
-                        seekDolr.setProgress(0);
-                        seekPenny.setProgress(0);
-                        seekQuid.setProgress(0);
-                        seekShil.setProgress(0);
-                        Toast.makeText(BankActivity.this,"Tansfer success", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(BankActivity.this,"Tansfer fail", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (NullPointerException ex){
-                    Log.d("BANK","WARN: bank.getValues is an empty map");
-                    //Toast.makeText(BankActivity.this,ex.getMessage(), Toast.LENGTH_SHORT).show();
+        transferCurrency.setOnClickListener(v -> {
+            Double percentageDolr, percentagePenny, percentageQuid, percentageShil;
+            percentageDolr = 1.0 * seekDolr.getProgress() / seekDolr.getMax();
+            percentagePenny = 1.0 * seekPenny.getProgress() / seekPenny.getMax();
+            percentageQuid = 1.0 * seekQuid.getProgress() / seekQuid.getMax();
+            percentageShil = 1.0 * seekShil.getProgress() / seekShil.getMax();
+            Map<Coin.Currency, Double> values = bank.getValues();
+            try {
+                if (bank.exchangeCurrenciesToGold(
+                        percentageDolr * values.get(Coin.Currency.DOLR),
+                        percentagePenny * values.get(Coin.Currency.PENY),
+                        percentageShil * values.get(Coin.Currency.SHIL),
+                        percentageQuid * values.get(Coin.Currency.QUID)))
+                {
+                    seekDolr.setProgress(0);
+                    seekPenny.setProgress(0);
+                    seekQuid.setProgress(0);
+                    seekShil.setProgress(0);
+                    Toast.makeText(BankActivity.this,"Tansfer success", Toast.LENGTH_SHORT).show();
                 }
-                refreshLabels();
+                else{
+                    Toast.makeText(BankActivity.this,"Tansfer fail", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException ex){
+                Log.d(TAG,"WARN: bank.getValues is an empty map");
+                //Toast.makeText(BankActivity.this,ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            refreshLabels();
         });
     }
 }

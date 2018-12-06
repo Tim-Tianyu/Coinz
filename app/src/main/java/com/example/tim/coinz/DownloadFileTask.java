@@ -1,6 +1,5 @@
 package com.example.tim.coinz;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -10,13 +9,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadFileTask extends AsyncTask<String, Void, String> {
-    private AsyncResponse delegate = null;
+    private AsyncResponse delegate;
 
     public interface AsyncResponse {
         void processFinish(String output);
     }
 
-    public DownloadFileTask(AsyncResponse delegate){
+    DownloadFileTask(AsyncResponse delegate){
         this.delegate = delegate;
     }
     @Override
@@ -43,7 +42,7 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     }
 
     @NonNull
-    private String readStream(InputStream stream) throws IOException {
+    private String readStream(InputStream stream) {
         java.util.Scanner s = new java.util.Scanner(stream).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }

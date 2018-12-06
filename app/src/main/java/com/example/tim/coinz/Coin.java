@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.util.Log;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
@@ -27,11 +28,13 @@ public class Coin {
     private LatLng position;
     private String symbol;
 
-    static final int CURRENCY_UNKNOWN = -1;
-    static final int CURRENCY_DOLR = 0;
-    static final int CURRENCY_PENY = 1;
-    static final int CURRENCY_QUID = 2;
-    static final int CURRENCY_SHIL = 3;
+    private static final int CURRENCY_UNKNOWN = -1;
+    private static final int CURRENCY_DOLR = 0;
+    private static final int CURRENCY_PENY = 1;
+    private static final int CURRENCY_QUID = 2;
+    private static final int CURRENCY_SHIL = 3;
+
+    private static final String TAG = "Coin";
 
     public enum Currency {
         QUID, SHIL, PENY, DOLR, UNKNOWN
@@ -148,7 +151,9 @@ public class Coin {
                 coinValues,
                 selectionCoin,
                 selectionCoinArgs);
-        assert (countCoin == 1);
+        if (countCoin == 1) {
+            Log.w(TAG, "multiple coin with same Id");
+        }
         collectedCoinsList.add(coin);
         coinsList.remove(coin);
         LoadActivity.mDbHelper.close();
@@ -162,7 +167,9 @@ public class Coin {
                 FeedEntry.TABLE_COIN,
                 selectionCoin,
                 selectionCoinArgs);
-        assert (countCoin == 1);
+        if (countCoin != 1) {
+            Log.w(TAG, "multiple coin with same Id");
+        }
         collectedCoinsList.remove(coin);
         LoadActivity.mDbHelper.close();
     }
