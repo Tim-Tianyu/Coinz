@@ -3,25 +3,18 @@ package com.example.tim.coinz;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
 import com.mapbox.android.core.location.LocationEnginePriority;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Geometry;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -36,11 +29,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
-import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationEngineListener, PermissionsListener {
     private MapView mapView;
@@ -62,41 +51,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         mAuth = FirebaseAuth.getInstance();
 
-        Button btnWallet = (Button) findViewById(R.id.activity_map_btn_wallet);
-        btnWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MapActivity.this, WalletActivity.class));
-            }
-        });
-        Button btnBank = (Button) findViewById(R.id.activity_map_btn_bank);
-        btnBank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MapActivity.this, BankActivity.class));
-            }
-        });
-        Button btnFriend = (Button) findViewById(R.id.activity_map_btn_friends);
-        btnFriend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MapActivity.this, FriendActivity.class));
-            }
-        });
-        Button btnLogOut = (Button) findViewById(R.id.activity_map_btn_log_out);
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Request.detachAllListener();
-                User.detachAllListener();
-                mAuth.signOut();
-                startActivity(new Intent(MapActivity.this, MainActivity.class));
-                FirebaseListener.clearCurrentFirestoreData();
-                finish();
-            }
+        Button btnWallet = findViewById(R.id.activity_map_btn_wallet);
+        btnWallet.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, WalletActivity.class)));
+        Button btnBank = findViewById(R.id.activity_map_btn_bank);
+        btnBank.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, BankActivity.class)));
+        Button btnFriend = findViewById(R.id.activity_map_btn_friends);
+        btnFriend.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, FriendActivity.class)));
+        Button btnLogOut = findViewById(R.id.activity_map_btn_log_out);
+        btnLogOut.setOnClickListener(v -> {
+            Request.detachAllListener();
+            User.detachAllListener();
+            Gift.detachAllListener();
+            mAuth.signOut();
+            startActivity(new Intent(MapActivity.this, MainActivity.class));
+            FirebaseListener.clearCurrentFirestoreData();
+            finish();
         });
 
-        mapView = (MapView) findViewById(R.id.activity_map_mv_map);
+        mapView = findViewById(R.id.activity_map_mv_map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         IconFactory iconFactory = IconFactory.getInstance(MapActivity.this);
@@ -116,21 +88,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // Set user interface options
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(@NonNull Marker marker) {
-                    Coin coin = Coin.getCoinByMarker(marker);
-                    if (coin != null && Coin.inRanged(originLocation, coin)) {
-                        Toast.makeText(MapActivity.this, "Collected " + Double.toString(coin.getValue()) + " " + coin.getCurrency(), Toast.LENGTH_LONG).show();
-                        Coin.collectedCoinsList.add(coin);
-                        map.removeMarker(marker);
-                    } else if (coin == null) {
-                        Log.d(tag, "Unknown coins");
-                    } else {
-                        Toast.makeText(MapActivity.this, "Out of Range", Toast.LENGTH_LONG).show();
-                    }
-                    return true;
+            map.setOnMarkerClickListener(marker -> {
+                Coin coin = Coin.getCoinByMarker(marker);
+                if (coin != null && Coin.inRanged(originLocation, coin)) {
+                    Toast.makeText(MapActivity.this, "Collected " + Double.toString(coin.getValue()) + " " + coin.getCurrency(), Toast.LENGTH_LONG).show();
+                    Coin.collectCoin(coin);
+                    map.removeMarker(marker);
+                } else if (coin == null) {
+                    Log.d(tag, "Unknown coins");
+                } else {
+                    Toast.makeText(MapActivity.this, "Out of Range", Toast.LENGTH_LONG).show();
                 }
+                return true;
             });
             // Make location information available
             enableLocation();
@@ -287,6 +256,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        moveTaskToBack(true);
     }
 }

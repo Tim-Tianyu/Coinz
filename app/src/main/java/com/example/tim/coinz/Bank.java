@@ -1,23 +1,24 @@
 package com.example.tim.coinz;
 
-import android.support.annotation.NonNull;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Bank {
-    public static Bank theBank = new Bank(10,0,1,1,1,1,0,0,0,0,0);
+    static Bank theBank = new Bank(10,0,1,1,1,1,0,0,0,0,0);
 
     private int dailyLimit, dailyCoins;
     private double valueDOLR, valueQUID,valueSHIL,valuePENY,valueGold;
     private double rateDOLR, rateQUID,rateSHIL,ratePENY;
 
-    public Bank (int dailyLimit, int dailyCoins, double rateDOLR, double ratePENY, double rateQUID, double rateSHIL,
+    static final int normalDailyLimit = 20;
+
+    Bank (int dailyLimit, int dailyCoins, double rateDOLR, double ratePENY, double rateQUID, double rateSHIL,
                  double valueGold, double valueDOLR, double valuePENY, double valueQUID, double valueSHIL) {
         this.dailyLimit = dailyLimit;
         this.dailyCoins = dailyCoins;
@@ -32,7 +33,7 @@ public class Bank {
         this.ratePENY = ratePENY;
     }
 
-    public boolean saveCoin(Coin coin){
+    boolean saveCoin(Coin coin){
         if (dailyCoins >= dailyLimit) return false;
 
         switch (coin.getCurrency()){
@@ -47,42 +48,44 @@ public class Bank {
             case UNKNOWN: return false;
         }
         dailyCoins++;
+        syncWithLocal();
         return true;
     }
 
-    public Map<Coin.currencies, Double> getValues(){
-        HashMap<Coin.currencies, Double> map = new HashMap<>();
-        map.put(Coin.currencies.DOLR, valueDOLR);
-        map.put(Coin.currencies.QUID, valueQUID);
-        map.put(Coin.currencies.SHIL, valueSHIL);
-        map.put(Coin.currencies.PENY, valuePENY);
+    public Map<Coin.Currency, Double> getValues(){
+        HashMap<Coin.Currency, Double> map = new HashMap<>();
+        map.put(Coin.Currency.DOLR, valueDOLR);
+        map.put(Coin.Currency.QUID, valueQUID);
+        map.put(Coin.Currency.SHIL, valueSHIL);
+        map.put(Coin.Currency.PENY, valuePENY);
         return map;
     }
 
-    public Map<Coin.currencies, Double> getRates() {
-        HashMap<Coin.currencies, Double> map = new HashMap<>();
-        map.put(Coin.currencies.DOLR, rateDOLR);
-        map.put(Coin.currencies.QUID, rateQUID);
-        map.put(Coin.currencies.SHIL, rateSHIL);
-        map.put(Coin.currencies.PENY, ratePENY);
+    Map<Coin.Currency, Double> getRates() {
+        HashMap<Coin.Currency, Double> map = new HashMap<>();
+        map.put(Coin.Currency.DOLR, rateDOLR);
+        map.put(Coin.Currency.QUID, rateQUID);
+        map.put(Coin.Currency.SHIL, rateSHIL);
+        map.put(Coin.Currency.PENY, ratePENY);
         return map;
     }
 
-    public double getValueGold() {
+    double getValueGold() {
         return valueGold;
     }
 
-    public boolean exchangeCurrenciesToGold(double valueDOLR, double valuePENY, double valueSHIL, double valueQUID){
+    boolean exchangeCurrenciesToGold(double valueDOLR, double valuePENY, double valueSHIL, double valueQUID){
         if (this.valueQUID < valueQUID || this.valuePENY < valuePENY || this.valueSHIL < valueSHIL || this.valueDOLR < valueDOLR) return false;
         this.valueGold += rateQUID * valueQUID + rateSHIL * valueSHIL + ratePENY * valuePENY + rateDOLR * valueDOLR;
         this.valueQUID -= valueQUID;
         this.valuePENY -= valuePENY;
         this.valueSHIL -= valueSHIL;
         this.valueDOLR -= valueDOLR;
+        syncWithLocal();
         return true;
     }
 
-    public boolean exchangeGoldToCurrency(double valueGold, Coin.currencies currency){
+    boolean exchangeGoldToCurrency(double valueGold, Coin.Currency currency){
         if (this.valueGold < valueGold) return false;
         this.valueGold -= valueGold;
         switch (currency){
@@ -96,20 +99,44 @@ public class Bank {
                 break;
             case UNKNOWN: return false;
         }
+        syncWithLocal();
         return true;
     }
 
-    public void receiveGift(ReceiveGiftListAdapter current, Gift gift, int position) {
+    void receiveGift(ReceiveGiftListAdapter current, Gift gift, int position) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("GIFT").document(gift.getGiftId()).update("IsReceived", true).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    current.removeItem(position);
-                } else {
-                    Log.w("BANK", "reveive gift fail");
-                }
+        db.collection("GIFT").document(gift.getGiftId()).update("IsReceived", true).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                current.removeItem(position);
+                valueGold += gift.getValue();
+                syncWithLocal();
+            } else {
+                Log.w("BANK", "reveive gift fail");
             }
         });
     }
+
+    private void syncWithLocal() {
+        FeedReaderDbHelper mDbHelper = LoadActivity.mDbHelper;
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        ContentValues userValues = new ContentValues();
+        userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_QUID, valueQUID);
+        userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_SHIL, valueSHIL);
+        userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_PENY, valuePENY);
+        userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_DOLR, valueDOLR);
+        userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_GOLD, valueGold);
+        //TODO walking distance sync in other place
+        //userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_DISTANCE, User.walkingDistance);
+
+        String selectionUser = FeedReaderContract.FeedEntry.COLUMN_USER_ID + " LIKE ?";
+        String[] selectionUserArgs = { User.currentUser.getUserId() };
+        int countUser = db.update(
+                FeedReaderContract.FeedEntry.TABLE_USER,
+                userValues,
+                selectionUser,
+                selectionUserArgs);
+        assert (countUser == 1);
+        mDbHelper.close();
+    }
+
 }

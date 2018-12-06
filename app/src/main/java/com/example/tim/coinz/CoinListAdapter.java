@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyViewHolder>{
-    private ArrayList<Coin> coinList;
     private LayoutInflater mInflater;
     private Context context;
 
@@ -32,9 +32,8 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         }
     }
 
-    public CoinListAdapter(Context context, ArrayList<Coin> coinList) {
+    public CoinListAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.coinList = coinList;
         this.context = context;
     }
 
@@ -49,7 +48,7 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Coin coin = coinList.get(position);
+        Coin coin = Coin.collectedCoinsList.get(position);
         String s = String.format("%s: %f", coin.getCurrency().toString(),  coin.getValue());
         holder.mTextView.setText(s);
         switch (coin.getCurrency()){
@@ -66,16 +65,19 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                coinList.remove(position);
-                //setEmptyViewVisibility();
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, coinList.size());
-                Bank.theBank.saveCoin(coin);
+                boolean success = Bank.theBank.saveCoin(coin);
+                if (!success) {
+                    Toast.makeText(context, "Reach daily limit", Toast.LENGTH_SHORT).show();
+                } else {
+                    Coin.discardCoin(Coin.collectedCoinsList.get(position));
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, Coin.collectedCoinsList.size());
+                }
             }
         });
         holder.btnGift.setOnClickListener(new View.OnClickListener() {
             int position = holder.getAdapterPosition();
-            Coin coin = coinList.get(position);
+            Coin coin = Coin.collectedCoinsList.get(position);
             @Override
             public void onClick(View v) {
                 FriendSelectListAdapter adapter = new FriendSelectListAdapter(context, CoinListAdapter.this, coin, User.filterFriendsBySentGift());
@@ -87,12 +89,12 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         });
     }
 
-    public boolean removeCoin(Coin coin){
-        if (coinList.contains(coin)){
-            int pos = coinList.indexOf(coin);
-            coinList.remove(pos);
+    boolean removeCoin(Coin coin) {
+        if (Coin.collectedCoinsList.contains(coin)) {
+            int pos = Coin.collectedCoinsList.indexOf(coin);
+            Coin.discardCoin(coin);
             notifyItemRemoved(pos);
-            notifyItemRangeChanged(pos, coinList.size());
+            notifyItemRangeChanged(pos, Coin.collectedCoinsList.size());
             return true;
         }
         return false;
@@ -100,6 +102,6 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return coinList.size();
+        return Coin.collectedCoinsList.size();
     }
 }

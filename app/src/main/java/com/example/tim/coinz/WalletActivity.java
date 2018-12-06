@@ -27,7 +27,7 @@ public class WalletActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new CoinListAdapter(this, Coin.collectedCoinsList);
+        mAdapter = new CoinListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
         Button btnReceive = (Button) findViewById(R.id.activity_wallet_btn_receive);

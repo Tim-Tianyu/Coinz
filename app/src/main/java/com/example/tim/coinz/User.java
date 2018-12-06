@@ -28,6 +28,7 @@ public class User{
     private String name;
     static User currentUser;
     static ArrayList<User> friends = new ArrayList<>();
+    static Double walkingDistance = 0.0;
     private static ListenerRegistration friendDeleteListener;
     private static final String TAG = "USER";
 
@@ -82,11 +83,8 @@ public class User{
         }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // TODO null pointer handler
                 requestListAdapter.removeItem(position);
                 friendListAdapter.addItem(new User(documentSnapshot.getId(), documentSnapshot.getString("Name")));
-                // reattach friendDeleteListener
-                //addFriendDeleteListener();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -122,17 +120,13 @@ public class User{
         writeBatch.update(collectionReference.document(friend.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(User.currentUser.getUserId())));
         writeBatch.update(collectionReference.document(User.currentUser.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(friend.getUserId())));
         writeBatch.commit()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // success write will trigger the delete friend listener, no need to update
-                        //adapter.removeItem(position);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    // success write will trigger the delete friend listener, no need to update
+                    //adapter.removeItem(position);
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // TODO handle failure
                         Log.w(TAG, e);
                     }
                 });
@@ -141,21 +135,23 @@ public class User{
     static void updateFriendListOnRequestAccept(String receiverId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("USER").document(receiverId).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        try {
-                            FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
-                            User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
-                            if (adapter != null) {
-                                adapter.addItem(newFriend);
-                                //TODO update friend select adapter
-                            } else {
-                                friends.add(newFriend);
-                            }
-                        } catch (NullPointerException ex){
-                            Log.w(TAG, ex);
+                .addOnSuccessListener(documentSnapshot -> {
+                    try {
+                        FriendListAdapter friendListAdapter = FriendListAdapter.getCurrentAdapter();
+                        FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
+                        User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
+                        if (friendListAdapter != null) {
+                            friendListAdapter.addItem(newFriend);
+                            //TODO update friend select adapter
+                        } else {
+                            friends.add(newFriend);
                         }
+
+                        if (friendSelectListAdapter != null){
+                            friendSelectListAdapter.addItem(newFriend);
+                        }
+                    } catch (NullPointerException ex){
+                        Log.w(TAG, ex);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -180,8 +176,6 @@ public class User{
                             Log.w(TAG, "listen:error", e);
                             return;
                         }
-                        // ignore changes from local
-                        if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) return;
 
                         for (DocumentChange dc : Objects.requireNonNull(queryDocumentSnapshots).getDocumentChanges()) {
                             if (dc.getType().equals(DocumentChange.Type.REMOVED)) {
@@ -194,7 +188,6 @@ public class User{
                                 FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
                                 if (adapter != null) {
                                     adapter.removeItem(position);
-                                    //TODO update friendselect adapter
                                 } else {
                                     friends.remove(position);
                                 }

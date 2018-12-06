@@ -14,8 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity"
-            android:excludeFromRecents="true">
+        <activity
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,14 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoadActivity"
-            android:excludeFromRecents="true"/>
-        <activity
-            android:name=".MapActivity">
-        </activity>
+            android:name=".LoadActivity" />
+        <activity android:name=".MapActivity"></activity>
         <activity android:name=".WalletActivity" />
         <activity android:name=".BankActivity" />
-        <activity android:name=".FriendActivity"></activity>
+        <activity android:name=".FriendActivity" />
+
     </application>
 
 </manifest>

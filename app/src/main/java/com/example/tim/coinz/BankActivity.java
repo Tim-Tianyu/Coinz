@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -58,11 +57,11 @@ public class BankActivity extends AppCompatActivity {
     }
 
     private void refreshLabels(){
-        Map<Coin.currencies, Double> values = bank.getValues();
-        valueDolr.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.DOLR)));
-        valuePenny.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.PENY)));
-        valueQuid.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.QUID)));
-        valueShil.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.currencies.SHIL)));
+        Map<Coin.Currency, Double> values = bank.getValues();
+        valueDolr.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.Currency.DOLR)));
+        valuePenny.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.Currency.PENY)));
+        valueQuid.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.Currency.QUID)));
+        valueShil.setText(String.format(Locale.UK,"%1$.2f" ,values.get(Coin.Currency.SHIL)));
         valueGold.setText(String.format(Locale.UK,"%1$.2f" , bank.getValueGold()));
     }
 
@@ -140,15 +139,15 @@ public class BankActivity extends AppCompatActivity {
         transferGold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Coin.currencies currency;
+                Coin.Currency currency;
                 if (radioDolr.isChecked()) {
-                    currency = Coin.currencies.DOLR;
+                    currency = Coin.Currency.DOLR;
                 } else if (radioPenny.isChecked()){
-                    currency = Coin.currencies.PENY;
+                    currency = Coin.Currency.PENY;
                 } else if (radioQuid.isChecked()){
-                    currency = Coin.currencies.QUID;
+                    currency = Coin.Currency.QUID;
                 } else if (radioShil.isChecked()){
-                    currency = Coin.currencies.SHIL;
+                    currency = Coin.Currency.SHIL;
                 } else{
                     Toast.makeText(BankActivity.this,"Please select a currency", Toast.LENGTH_SHORT).show();
                     return;
@@ -172,13 +171,13 @@ public class BankActivity extends AppCompatActivity {
                 percentagePenny = 1.0 * seekPenny.getProgress() / seekPenny.getMax();
                 percentageQuid = 1.0 * seekQuid.getProgress() / seekQuid.getMax();
                 percentageShil = 1.0 * seekShil.getProgress() / seekShil.getMax();
-                Map<Coin.currencies, Double> values = bank.getValues();
+                Map<Coin.Currency, Double> values = bank.getValues();
                 try {
                     if (bank.exchangeCurrenciesToGold(
-                            percentageDolr * values.get(Coin.currencies.DOLR),
-                            percentagePenny * values.get(Coin.currencies.PENY),
-                            percentageShil * values.get(Coin.currencies.SHIL),
-                            percentageQuid * values.get(Coin.currencies.QUID)))
+                            percentageDolr * values.get(Coin.Currency.DOLR),
+                            percentagePenny * values.get(Coin.Currency.PENY),
+                            percentageShil * values.get(Coin.Currency.SHIL),
+                            percentageQuid * values.get(Coin.Currency.QUID)))
                     {
                         seekDolr.setProgress(0);
                         seekPenny.setProgress(0);

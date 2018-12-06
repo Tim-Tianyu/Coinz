@@ -21,29 +21,30 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
     private static boolean haveFoucus;
     private static FriendSelectListAdapter currentAdapter;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtName;
-        public Button btnSelect;
+        TextView txtName;
+        Button btnSelect;
 
-        public MyViewHolder(View v) {
+        MyViewHolder(View v) {
             super(v);
             txtName = itemView.findViewById(R.id.friend_list_txt_name);
             btnSelect = itemView.findViewById(R.id.friend_list_btn_delete);
         }
     }
 
-    public FriendSelectListAdapter(Context context, CoinListAdapter adapter, Coin giftCoin, ArrayList<User> filteredFriendList) {
+    FriendSelectListAdapter(Context context, CoinListAdapter adapter, Coin giftCoin, ArrayList<User> filteredFriendList) {
         this.mInflater = LayoutInflater.from(context);
         this.friendList = filteredFriendList;
         this.giftCoin = giftCoin;
         this.adapter = adapter;
     }
 
-    public void setDialog(Dialog dialog) {
+    void setDialog(Dialog dialog) {
         this.dialog = dialog;
     }
 
+    @NonNull
     @Override
     public FriendSelectListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = mInflater.inflate(R.layout.friend_list_row, parent, false);
@@ -55,17 +56,14 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
         User friend = friendList.get(i);
         holder.txtName.setText(friend.getName());
         holder.btnSelect.setText("Select");
-        holder.btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                User friend = friendList.get(position);
-                Coin.sendCoinAsGift(dialog, adapter, giftCoin, friend);
-            }
+        holder.btnSelect.setOnClickListener(v -> {
+            int position = holder.getAdapterPosition();
+            User friend1 = friendList.get(position);
+            Coin.sendCoinAsGift(dialog, adapter, giftCoin, friend1);
         });
     }
 
-    public boolean removeItemById(String userId){
+    void removeItemById(String userId){
         for (User user : friendList){
             if (userId.equals(user.getUserId())){
                 int position = friendList.indexOf(user);
@@ -74,7 +72,12 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
                 notifyItemRangeChanged(position, friendList.size());
             }
         }
-        return false;
+    }
+
+    void addItem(User user){
+        friendList.add(user);
+        notifyItemInserted(friendList.size()-1);
+        notifyItemRangeChanged(friendList.size()-1, friendList.size());
     }
 
     @Override
@@ -82,17 +85,17 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
         return friendList.size();
     }
 
-    public static void onCurrentAdapterEnd(){
+    static void onCurrentAdapterEnd(){
         haveFoucus = false;
         currentAdapter = null;
     }
 
-    public static void onStartAdapter(FriendSelectListAdapter adapter){
+    static void onStartAdapter(FriendSelectListAdapter adapter){
         haveFoucus = true;
         currentAdapter = adapter;
     }
 
-    public static FriendSelectListAdapter getCurrentAdapter(){
+    static FriendSelectListAdapter getCurrentAdapter(){
         if (!haveFoucus) return  null;
         return currentAdapter;
     }

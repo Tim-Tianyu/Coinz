@@ -1,21 +1,16 @@
 package com.example.tim.coinz;
 
-import android.app.Application;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.example.tim.coinz.FeedReaderContract.FeedEntry;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,52 +21,24 @@ public class Coin {
     static ArrayList<Coin> coinsList = new ArrayList<>();
     static ArrayList<Coin> collectedCoinsList = new ArrayList<>();
     private String id;
-    private currencies currency;
+    private Currency currency;
     private double value;
     private Marker marker;
     private LatLng position;
     private String symbol;
 
-    public static final int CURRENCY_UNKNOWN = -1;
-    public static final int CURRENCY_DOLR = 0;
-    public static final int CURRENCY_PENY = 1;
-    public static final int CURRENCY_QUID = 2;
-    public static final int CURRENCY_SHIL = 3;
-    public static final int CURRENCY_GOLD = 4;
+    static final int CURRENCY_UNKNOWN = -1;
+    static final int CURRENCY_DOLR = 0;
+    static final int CURRENCY_PENY = 1;
+    static final int CURRENCY_QUID = 2;
+    static final int CURRENCY_SHIL = 3;
 
-    public enum currencies {
+    public enum Currency {
         QUID, SHIL, PENY, DOLR, UNKNOWN
     }
 
-    public static Coin getCoinByMarker(Marker marker) {
-        for (Coin coin: coinsList){
-            if (coin.marker == marker) return coin;
-        }
-        return null;
-    }
-
-    public static boolean inRanged(Location location, Coin coin){
-        double range = 50;
-        return coin.marker.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
-    }
-
-    public static currencies generateCurrencyByName(String name){
-        switch (name) {
-            case "DOLR":
-                return currencies.DOLR;
-            case "QUID":
-                return currencies.QUID;
-            case "PENY":
-                return currencies.PENY;
-            case "SHIL":
-                return currencies.SHIL;
-            default:
-                return currencies.UNKNOWN;
-        }
-    }
-
-    public Coin (String id, double value, String currency, String symbol, LatLng position) {
-        this.currency = Coin.generateCurrencyByName(currency);
+    Coin (String id, double value, Currency currency, String symbol, LatLng position) {
+        this.currency = currency;
         this.id = id;
         this.value = value;
         this.symbol = symbol;
@@ -86,7 +53,7 @@ public class Coin {
         return value;
     }
 
-    public currencies getCurrency() {
+    Currency getCurrency() {
         return currency;
     }
 
@@ -98,12 +65,12 @@ public class Coin {
         return position;
     }
 
-    public void setMarker(Marker marker) {
+    void setMarker(Marker marker) {
         this.marker = marker;
     }
 
     static void sendCoinAsGift(Dialog dialog, CoinListAdapter adapter, Coin coin, User friend){
-        if (coin.currency.equals(currencies.UNKNOWN)) return;
+        if (coin.currency.equals(Currency.UNKNOWN)) return;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference userCollection = db.collection("USER");
         Double value = coin.value * Bank.theBank.getRates().get(coin.currency);
@@ -116,29 +83,87 @@ public class Coin {
         docData.put("Time", timestamp);
 
         db.collection("GIFT").add(docData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        String giftId = documentReference.getId();
-                        Gift.sentGifts.add(new Gift(giftId, value, false, User.currentUser.getUserId(), friend.getUserId(), timestamp));
-                        dialog.dismiss();
-                        adapter.removeCoin(coin);
-
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    String giftId = documentReference.getId();
+                    Gift.sentGifts.add(new Gift(giftId, value, false, User.currentUser.getUserId(), friend.getUserId(), timestamp));
+                    dialog.dismiss();
+                    adapter.removeCoin(coin);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //TODO
-                    }
+                .addOnFailureListener(e -> {
+                    //TODO
                 });
     }
 
-    static int currencyToDouble(currencies currency){
-        if (currency.equals(currencies.DOLR)) return CURRENCY_DOLR;
-        else if (currency.equals(currencies.PENY)) return CURRENCY_PENY;
-        else if (currency.equals(currencies.QUID)) return CURRENCY_QUID;
-        else if (currency.equals(currencies.SHIL)) return CURRENCY_SHIL;
+    static int currencyToInt(Currency currency) {
+        if (currency.equals(Currency.DOLR)) return CURRENCY_DOLR;
+        else if (currency.equals(Currency.PENY)) return CURRENCY_PENY;
+        else if (currency.equals(Currency.QUID)) return CURRENCY_QUID;
+        else if (currency.equals(Currency.SHIL)) return CURRENCY_SHIL;
         else return CURRENCY_UNKNOWN;
+    }
+
+    static Currency intToCurrency(int num) {
+        if (num == CURRENCY_DOLR) return Currency.DOLR;
+        else if (num == CURRENCY_PENY) return Currency.PENY;
+        else if (num == CURRENCY_QUID) return Currency.QUID;
+        else if (num == CURRENCY_SHIL) return Currency.SHIL;
+        else return Currency.UNKNOWN;
+    }
+
+    static Coin getCoinByMarker(Marker marker) {
+        for (Coin coin: coinsList) {
+            if (coin.marker == marker) return coin;
+        }
+        return null;
+    }
+
+    static boolean inRanged(Location location, Coin coin) {
+        double range = 50;
+        return coin.marker.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
+    }
+
+    static Currency generateCurrencyByName(String name) {
+        switch (name) {
+            case "DOLR":
+                return Currency.DOLR;
+            case "QUID":
+                return Currency.QUID;
+            case "PENY":
+                return Currency.PENY;
+            case "SHIL":
+                return Currency.SHIL;
+            default:
+                return Currency.UNKNOWN;
+        }
+    }
+
+    static void collectCoin(Coin coin){
+        SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
+        ContentValues coinValues = new ContentValues();
+        coinValues.put(FeedEntry.COLUMN_COIN_STATUS, true);
+        String selectionCoin = FeedEntry.COLUMN_COIN_ID + " LIKE ?";
+        String[] selectionCoinArgs = { coin.getId() };
+        int countCoin = db.update(
+                FeedEntry.TABLE_COIN,
+                coinValues,
+                selectionCoin,
+                selectionCoinArgs);
+        assert (countCoin == 1);
+        collectedCoinsList.add(coin);
+        coinsList.remove(coin);
+        LoadActivity.mDbHelper.close();
+    }
+
+    static void discardCoin(Coin coin) {
+        SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
+        String selectionCoin = FeedEntry.COLUMN_COIN_ID + " LIKE ?";
+        String[] selectionCoinArgs = { coin.getId() };
+        int countCoin = db.delete(
+                FeedEntry.TABLE_COIN,
+                selectionCoin,
+                selectionCoinArgs);
+        assert (countCoin == 1);
+        collectedCoinsList.remove(coin);
+        LoadActivity.mDbHelper.close();
     }
 }

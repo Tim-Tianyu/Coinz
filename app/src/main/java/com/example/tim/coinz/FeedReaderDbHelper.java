@@ -3,11 +3,16 @@ package com.example.tim.coinz;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import com.example.tim.coinz.FeedReaderContract.FeedEntry;
+
+import java.sql.Timestamp;
 
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
     static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Local.db";
+    static final String DATABASE_NAME = "Local.db";
+    private static final String TAG = "FeedReaderDbHelper";
     private static final String SQL_CREATE_TABLE_COIN =
             "CREATE TABLE " + FeedEntry.TABLE_COIN + " (" +
                     FeedEntry._ID + " INTEGER PRIMARY KEY," +
@@ -33,15 +38,16 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     FeedEntry.COLUMN_USER_PENY_RATE + " DOUBLE," +
                     FeedEntry.COLUMN_USER_DOLR_RATE + " DOUBLE," +
                     FeedEntry.COLUMN_USER_GOLD + " DOUBLE," +
-                    FeedEntry.COLUMN_USER_LAST_ACTIVE + "DATE" +
+                    FeedEntry.COLUMN_USER_LAST_ACTIVE + " CHARACTER(20)," +
                     FeedEntry.COLUMN_USER_DISTANCE + " DOUBLE)";
 
-    public FeedReaderDbHelper(Context context) {
-        super(context, DATABASE_NAME + ".db", null, DATABASE_VERSION);
+    FeedReaderDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.i(TAG, "creating tables");
         db.execSQL(SQL_CREATE_TABLE_COIN);
         db.execSQL(SQL_CREATE_TABLE_USER);
     }
