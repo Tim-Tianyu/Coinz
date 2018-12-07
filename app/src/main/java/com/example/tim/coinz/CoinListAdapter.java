@@ -65,10 +65,13 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
         }
         holder.btnBank.setOnClickListener(v -> {
             int position1 = holder.getAdapterPosition();
-            boolean success = Bank.theBank.saveCoin(coin);
+            Double bonus = 1.0;
+            if (MapActivity.selectedMode == MapActivity.TREASURE_HUNT) bonus = 1.5;
+            boolean success = Bank.theBank.saveCoin(coin, bonus);
             if (!success) {
                 Toast.makeText(context, "Reach daily limit", Toast.LENGTH_SHORT).show();
             } else {
+                if (MapActivity.selectedMode == MapActivity.TREASURE_HUNT) Toast.makeText(context, "Get 150% bonus", Toast.LENGTH_SHORT).show();
                 Coin.discardCoin(Coin.collectedCoinsList.get(position1));
                 notifyItemRemoved(position1);
                 notifyItemRangeChanged(position1, Coin.collectedCoinsList.size());

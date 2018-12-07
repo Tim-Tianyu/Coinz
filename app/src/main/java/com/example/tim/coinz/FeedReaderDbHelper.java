@@ -39,6 +39,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     FeedEntry.COLUMN_USER_LAST_ACTIVE + " CHARACTER(20)," +
                     FeedEntry.COLUMN_USER_MODE + " BOOLEAN," +
                     FeedEntry.COLUMN_USER_IS_SELECT + " BOOLEAN," +
+                    FeedEntry.COLUMN_USER_REWARD_LEVEL + " INTEGER," +
                     FeedEntry.COLUMN_USER_DISTANCE + " DOUBLE)";
 
     FeedReaderDbHelper(Context context) {

@@ -62,6 +62,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
                 FeedEntry.COLUMN_USER_MODE,
                 FeedEntry.COLUMN_USER_IS_SELECT,
                 FeedEntry.COLUMN_USER_DISTANCE,
+                FeedEntry.COLUMN_USER_REWARD_LEVEL,
         };
 
         String selection = FeedEntry.COLUMN_USER_ID + " = ?";
@@ -101,6 +102,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
                 User.walkingDistance = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_DISTANCE));
                 gameModeSelected = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_IS_SELECT)) != 0;
                 MapActivity.selectedMode = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_MODE)) != 0;
+                Reward.currentLevel = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_REWARD_LEVEL));
                 loadBankAndCoinListFromLocal(userCursor);
                 userCursor.close();
             } else {
@@ -247,6 +249,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         values.put(FeedEntry.COLUMN_USER_LAST_ACTIVE, currentDate());
         values.put(FeedEntry.COLUMN_USER_DISTANCE, 0.0);
         values.put(FeedEntry.COLUMN_USER_IS_SELECT, false);
+        values.put(FeedEntry.COLUMN_USER_REWARD_LEVEL, Reward.LEVEL_0);
         String selection = FeedEntry.COLUMN_USER_ID + " LIKE ?";
         String[] selectionArgs = { userId };
         int count = db.update(FeedEntry.TABLE_USER, values, selection, selectionArgs);
@@ -273,6 +276,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         values.put(FeedEntry.COLUMN_USER_MODE, true);
         values.put(FeedEntry.COLUMN_USER_IS_SELECT, false);
         values.put(FeedEntry.COLUMN_USER_DISTANCE, 0.0);
+        values.put(FeedEntry.COLUMN_USER_REWARD_LEVEL, Reward.LEVEL_0);
         long success = db.insert(FeedEntry.TABLE_USER, null, values);
         assert (success != -1);
     }

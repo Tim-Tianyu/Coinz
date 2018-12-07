@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Bank {
-    static Bank theBank = new Bank(10,0,1,1,1,1,0,0,0,0,0);
-
     private int dailyLimit, dailyCoins;
     private double valueDOLR, valueQUID,valueSHIL,valuePENY,valueGold;
     private double rateDOLR, rateQUID,rateSHIL,ratePENY;
 
-    static final int normalDailyLimit = 20;
+    static final int normalDailyLimit = 25;
+    static Bank theBank = new Bank(normalDailyLimit,0,1,1,1,1,0,0,0,0,0);
+
 
     Bank (int dailyLimit, int dailyCoins, double rateDOLR, double ratePENY, double rateQUID, double rateSHIL,
                  double valueGold, double valueDOLR, double valuePENY, double valueQUID, double valueSHIL) {
@@ -33,17 +33,17 @@ public class Bank {
         this.ratePENY = ratePENY;
     }
 
-    boolean saveCoin(Coin coin){
+    boolean saveCoin(Coin coin, Double bonus){
         if (dailyCoins >= dailyLimit) return false;
 
         switch (coin.getCurrency()){
-            case PENY: valuePENY += coin.getValue();
+            case PENY: valuePENY += bonus * coin.getValue();
                 break;
-            case QUID: valueQUID += coin.getValue();
+            case QUID: valueQUID += bonus * coin.getValue();
                 break;
-            case DOLR: valueDOLR += coin.getValue();
+            case DOLR: valueDOLR += bonus * coin.getValue();
                 break;
-            case SHIL: valueSHIL += coin.getValue();
+            case SHIL: valueSHIL += bonus * coin.getValue();
                 break;
             case UNKNOWN: return false;
         }
@@ -114,6 +114,11 @@ public class Bank {
                 Log.w("BANK", "reveive gift fail");
             }
         });
+    }
+
+    void collectReward(Reward reward){
+        valueGold += reward.getRewardValue();
+        syncWithLocal();
     }
 
     private void syncWithLocal() {

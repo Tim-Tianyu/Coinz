@@ -32,5 +32,6 @@ final class FeedReaderContract {
         static final String COLUMN_USER_DISTANCE = "distance";
         static final String COLUMN_USER_MODE = "selectedMode";
         static final String COLUMN_USER_IS_SELECT = "isSelect";
+        static final String COLUMN_USER_REWARD_LEVEL = "level";
     }
 }

@@ -1,12 +1,14 @@
 package com.example.tim.coinz;
 
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -31,8 +33,10 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
+import com.example.tim.coinz.FeedReaderContract.FeedEntry;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationEngineListener{
     private MapView mapView;
@@ -62,13 +66,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnFriend.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, FriendActivity.class)));
         Button btnLogOut = findViewById(R.id.activity_map_btn_log_out);
         btnLogOut.setOnClickListener(v -> {
-            Request.detachAllListener();
-            User.detachAllListener();
-            Gift.detachAllListener();
-            mAuth.signOut();
-            startActivity(new Intent(MapActivity.this, MainActivity.class));
-            FirebaseListener.clearCurrentFirestoreData();
-            finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+            builder.setTitle("Log out")
+                    .setMessage("Are you sure you want to log out?")
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        Request.detachAllListener();
+                        User.detachAllListener();
+                        Gift.detachAllListener();
+                        mAuth.signOut();
+                        startActivity(new Intent(MapActivity.this, MainActivity.class));
+                        FirebaseListener.clearCurrentFirestoreData();
+                        finish();
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .create().show();
         });
         Button btnReward = findViewById(R.id.activity_map_btn_reward);
         btnReward.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, rewardActivity.class)));
@@ -210,7 +222,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } else {
             Log.d(tag, "[onLocationChanged] location is not null");
             if (originLocation != null && ! recordWalkingDistance(originLocation, location)){
-                Toast.makeText(MapActivity.this, "Going too fast", Toast.LENGTH_SHORT);
+                Toast.makeText(MapActivity.this, "Going too fast", Toast.LENGTH_SHORT).show();
             }
             originLocation = location;
             setCameraPosition(location);
@@ -219,10 +231,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private boolean recordWalkingDistance(Location prev, Location now){
-        float max = 50;
+        float max = 20;
         float dist =  prev.distanceTo(now);
+        Toast.makeText(MapActivity.this, String.format(Locale.UK, "%1$.2f", dist), Toast.LENGTH_SHORT).show();
         if (dist > max) return false;
         User.walkingDistance += dist;
+        ContentValues values = new ContentValues();
+        values.put(FeedEntry.COLUMN_USER_DISTANCE, User.walkingDistance);
+        SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
+        String selection = FeedEntry.COLUMN_USER_ID + " LIKE ?";
+        String[] selectionArgs = { User.currentUser.getUserId() };
+        db.update(FeedEntry.TABLE_USER, values, selection, selectionArgs);
         return true;
     }
 
