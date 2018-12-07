@@ -68,6 +68,10 @@ public class Coin {
         return position;
     }
 
+    public Marker getMarker() {
+        return marker;
+    }
+
     void setMarker(Marker marker) {
         this.marker = marker;
     }
@@ -121,8 +125,13 @@ public class Coin {
     }
 
     static boolean inRanged(Location location, Coin coin) {
-        double range = 50;
-        return coin.marker.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
+        double range = 25;
+        return coin.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
+    }
+
+    static boolean inViewRange(Location location, Coin coin){
+        double range = 100;
+        return coin.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
     }
 
     static Currency generateCurrencyByName(String name) {

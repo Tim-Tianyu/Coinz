@@ -33,6 +33,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     private static final String TAG = "LoadActivity";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
     private Double valueDolr = 0.0 ,valuePeny = 0.0, valueQuid = 0.0, valueShil = 0.0, valueGold = 0.0;
+    private boolean gameModeSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,8 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
                 FeedEntry.COLUMN_USER_PENY_RATE,
                 FeedEntry.COLUMN_USER_DOLR_RATE,
                 FeedEntry.COLUMN_USER_LAST_ACTIVE,
+                FeedEntry.COLUMN_USER_MODE,
+                FeedEntry.COLUMN_USER_IS_SELECT,
                 FeedEntry.COLUMN_USER_DISTANCE,
         };
 
@@ -94,15 +97,23 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
             valueShil = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_SHIL));
             valueGold = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_GOLD));
             if (isCurrentDate(date)){
+                // same day from last download
                 User.walkingDistance = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_DISTANCE));
+                gameModeSelected = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_IS_SELECT)) != 0;
+                MapActivity.selectedMode = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_MODE)) != 0;
                 loadBankAndCoinListFromLocal(userCursor);
                 userCursor.close();
             } else {
+                // different date from last download
                 userCursor.close();
                 loadBankAndCoinListFromRemote();
             }
         }
-        this.startActivity(new Intent(this, MapActivity.class));
+        if (gameModeSelected) {
+            this.startActivity(new Intent(this, MapActivity.class));
+        } else {
+            this.startActivity(new Intent(this, gameSelectActivity.class));
+        }
         this.finish();
     }
 
@@ -160,7 +171,17 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
     private void loadBankAndCoinListFromRemote() {
         DownloadFileTask task = new DownloadFileTask(LoadActivity.this);
-        task.execute("http://homepages.inf.ed.ac.uk/stg/coinz/2018/10/03/coinzmap.geojson");
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DATE);
+        String URL;
+        if (day < 10) {
+            URL = String.format("http://homepages.inf.ed.ac.uk/stg/coinz/%s/%s/0%s/coinzmap.geojson", year, month, day);
+        } else {
+            URL = String.format("http://homepages.inf.ed.ac.uk/stg/coinz/%s/%s/%s/coinzmap.geojson", year, month, day);
+        }
+        task.execute(URL);
     }
 
     // this will be called when the map finish downloaded (after loadBankAndCoinListFromRemote);
@@ -225,6 +246,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         values.put(FeedEntry.COLUMN_USER_DOLR_RATE, rateDolr);
         values.put(FeedEntry.COLUMN_USER_LAST_ACTIVE, currentDate());
         values.put(FeedEntry.COLUMN_USER_DISTANCE, 0.0);
+        values.put(FeedEntry.COLUMN_USER_IS_SELECT, false);
         String selection = FeedEntry.COLUMN_USER_ID + " LIKE ?";
         String[] selectionArgs = { userId };
         int count = db.update(FeedEntry.TABLE_USER, values, selection, selectionArgs);
@@ -248,6 +270,8 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         values.put(FeedEntry.COLUMN_USER_DOLR_RATE, 1.0);
         values.put(FeedEntry.COLUMN_USER_GOLD, 0.0);
         values.put(FeedEntry.COLUMN_USER_LAST_ACTIVE, currentDate());
+        values.put(FeedEntry.COLUMN_USER_MODE, true);
+        values.put(FeedEntry.COLUMN_USER_IS_SELECT, false);
         values.put(FeedEntry.COLUMN_USER_DISTANCE, 0.0);
         long success = db.insert(FeedEntry.TABLE_USER, null, values);
         assert (success != -1);

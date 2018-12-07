@@ -30,5 +30,7 @@ final class FeedReaderContract {
         static final String COLUMN_USER_GOLD = "gold";
         static final String COLUMN_USER_LAST_ACTIVE = "lastActive";
         static final String COLUMN_USER_DISTANCE = "distance";
+        static final String COLUMN_USER_MODE = "selectedMode";
+        static final String COLUMN_USER_IS_SELECT = "isSelect";
     }
 }
