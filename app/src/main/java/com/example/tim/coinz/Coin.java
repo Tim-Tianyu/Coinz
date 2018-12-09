@@ -68,7 +68,7 @@ public class Coin {
         return position;
     }
 
-    public Marker getMarker() {
+    Marker getMarker() {
         return marker;
     }
 
@@ -96,9 +96,7 @@ public class Coin {
                     dialog.dismiss();
                     adapter.removeCoin(coin);
                 })
-                .addOnFailureListener(e -> {
-                    //TODO
-                });
+                .addOnFailureListener(e -> Log.w(TAG, e));
     }
 
     static int currencyToInt(Currency currency) {
@@ -125,7 +123,7 @@ public class Coin {
     }
 
     static boolean inRanged(Location location, Coin coin) {
-        double range = 25;
+        double range = 100;
         return coin.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
     }
 

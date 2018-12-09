@@ -58,7 +58,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         holder.btnDelete.setOnClickListener(v -> {
             currentPosition = holder.getAdapterPosition();
             dialog.show();
-            // TODO need refactor all the adapters to remove redundant parameters like "friendList.get(position)"
         });
     }
 

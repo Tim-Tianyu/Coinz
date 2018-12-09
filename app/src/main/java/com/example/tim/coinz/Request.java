@@ -102,7 +102,6 @@ class Request {
                             if (status.equals(Request.ACCEPT)){
                                 Request request = findRequestById(sentRequests, snapshot.getId());
                                 if (request == null){
-                                    // TODO add some more
                                     Log.w(TAG, "accepted sent request not found");
                                     return;
                                 }
@@ -111,7 +110,6 @@ class Request {
                             } else if (status.equals(Request.DENY)) {
                                 Request request = findRequestById(sentRequests, snapshot.getId());
                                 if (request == null){
-                                    // TODO add some more
                                     Log.w(TAG, "denied sent request not found");
                                     return;
                                 }

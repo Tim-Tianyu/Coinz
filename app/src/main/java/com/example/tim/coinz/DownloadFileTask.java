@@ -2,6 +2,7 @@ package com.example.tim.coinz;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,8 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         try {
             return loadFileFromNetwork(urls[0]);
         } catch (IOException e) {
-            return "Unable to load content. Check your network connection";
+            Log.w("DownloadFileTask", e);
+            return "";
         }
     }
 

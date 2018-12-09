@@ -15,7 +15,8 @@
         mapbox:mapbox_cameraZoom="11"
         mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
 
     </com.mapbox.mapboxsdk.maps.MapView>
 
@@ -27,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Wallet"
+        android:text="@string/wallet"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.971"
@@ -43,7 +44,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Bank"
+        android:text="@string/bank"
         mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_wallet"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.971"
@@ -59,7 +60,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Friends"
+        android:text="@string/friends"
         mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_bank"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.971"
@@ -75,8 +76,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Log out"
-        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_friends"
+        android:text="@string/log_out"
+        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_reward"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="@+id/activity_map_mv_map"
@@ -91,8 +92,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Reward"
-        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_log_out"
+        android:text="@string/reward"
+        mapbox:layout_constraintBottom_toTopOf="@+id/activity_map_btn_friends"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent"

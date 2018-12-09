@@ -73,20 +73,14 @@ public class User{
         }).addOnSuccessListener(documentSnapshot -> {
             requestListAdapter.removeItem(position);
             friendListAdapter.addItem(new User(documentSnapshot.getId(), documentSnapshot.getString("Name")));
-        }).addOnFailureListener(e -> {
-            // TODO handle failure
-            Log.w(TAG, e);
-        });
+        }).addOnFailureListener(e -> Log.w(TAG, e));
     }
 
     static void rejectFriendRequest(RequestListAdapter adapter, Request request, int position) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("FRIEND_REQUEST").document(request.getRequestId()).update("Status", Request.DENY)
                 .addOnSuccessListener(aVoid -> adapter.removeItem(position))
-                .addOnFailureListener(e -> {
-                    // TODO handle failure
-                    Log.w(TAG, e);
-                });
+                .addOnFailureListener(e -> Log.w(TAG, e));
     }
 
     static void deleteFriend(User friend) {
@@ -108,7 +102,6 @@ public class User{
                         User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
                         if (friendListAdapter != null) {
                             friendListAdapter.addItem(newFriend);
-                            //TODO update friend select adapter
                         } else {
                             friends.add(newFriend);
                         }
@@ -120,10 +113,7 @@ public class User{
                         Log.w(TAG, ex);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    //TODO handle failure
-                    Log.w(TAG, e);
-                });
+                .addOnFailureListener(e -> Log.w(TAG, e));
     }
 
     static void addFriendDeleteListener(){

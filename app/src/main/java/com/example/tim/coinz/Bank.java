@@ -130,8 +130,6 @@ public class Bank {
         userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_PENY, valuePENY);
         userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_DOLR, valueDOLR);
         userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_GOLD, valueGold);
-        //TODO walking distance sync in other place
-        //userValues.put(FeedReaderContract.FeedEntry.COLUMN_USER_DISTANCE, User.walkingDistance);
 
         String selectionUser = FeedReaderContract.FeedEntry.COLUMN_USER_ID + " LIKE ?";
         String[] selectionUserArgs = { User.currentUser.getUserId() };
@@ -143,5 +141,4 @@ public class Bank {
         assert (countUser == 1);
         mDbHelper.close();
     }
-
 }

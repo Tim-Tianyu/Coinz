@@ -7,4 +7,9 @@
     <string name="PENNY">PENNY</string>
     <string name="transfer">Transfer</string>
     <string name="GOLD">GOLD</string>
+    <string name="wallet">Wallet</string>
+    <string name="bank">Bank</string>
+    <string name="friends">Friends</string>
+    <string name="log_out">Log out</string>
+    <string name="reward">Reward</string>
 </resources>

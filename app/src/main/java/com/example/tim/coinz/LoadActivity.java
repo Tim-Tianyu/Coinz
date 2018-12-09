@@ -1,5 +1,6 @@
 package com.example.tim.coinz;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,14 +35,20 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
     private Double valueDolr = 0.0 ,valuePeny = 0.0, valueQuid = 0.0, valueShil = 0.0, valueGold = 0.0;
     private boolean gameModeSelected = false;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
         mDbHelper = new FeedReaderDbHelper(LoadActivity.this);
-        String userId = getIntent().getStringExtra("userId");
+        userId = getIntent().getStringExtra("userId");
+    }
+
+    @Override
+    protected void onStart() {
         firebaseListener.downloadData(LoadActivity.this, userId);
+        super.onStart();
     }
 
     public void onCompleteDownloadFirebaseData() {
@@ -105,18 +112,17 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
                 Reward.currentLevel = userCursor.getInt(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_REWARD_LEVEL));
                 loadBankAndCoinListFromLocal(userCursor);
                 userCursor.close();
+                if (gameModeSelected) {
+                    this.startActivity(new Intent(this, MapActivity.class));
+                } else {
+                    this.startActivity(new Intent(this, gameSelectActivity.class));
+                }
             } else {
                 // different date from last download
                 userCursor.close();
                 loadBankAndCoinListFromRemote();
             }
         }
-        if (gameModeSelected) {
-            this.startActivity(new Intent(this, MapActivity.class));
-        } else {
-            this.startActivity(new Intent(this, gameSelectActivity.class));
-        }
-        this.finish();
     }
 
     private void loadBankAndCoinListFromLocal(Cursor userCursor){
@@ -171,7 +177,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         Bank.theBank = new Bank(Bank.normalDailyLimit, dailyCoins, rateDolr, ratePenny, rateQuid, rateShil, valueGold, valueDolr, valuePeny, valueQuid, valueShil);
     }
 
-    private void loadBankAndCoinListFromRemote() {
+    private void loadBankAndCoinListFromRemote(){
         DownloadFileTask task = new DownloadFileTask(LoadActivity.this);
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -190,6 +196,23 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     @Override
     public void processFinish(String jsonString) {
         double rateShil, rateDolr, ratePenny, rateQuid;
+        if (jsonString.isEmpty()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(LoadActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+            builder.setTitle("Network issue")
+                    .setMessage("Experiencing network issue, try to reconnect?")
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        loadBankAndCoinListFromRemote();
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) ->{
+                        dialog.dismiss();
+                        finish();
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setCancelable(false)
+                    .create().show();
+            return;
+        }
+
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONObject rates = jsonObject.getJSONObject("rates");
@@ -204,7 +227,6 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
             ratePenny = 1.0;
             rateQuid = 1.0;
         }
-
         // delete all coins from previous date
         deleteAllCoins();
 
@@ -257,6 +279,12 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
         // load currency values form user
         Bank.theBank = new Bank(Bank.normalDailyLimit, 0,rateDolr, ratePenny, rateQuid, rateShil, valueGold, valueDolr, valuePeny, valueQuid, valueShil);
+
+        if (gameModeSelected) {
+            this.startActivity(new Intent(this, MapActivity.class));
+        } else {
+            this.startActivity(new Intent(this, gameSelectActivity.class));
+        }
     }
 
     private void createNewUser() {
@@ -272,7 +300,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         values.put(FeedEntry.COLUMN_USER_PENY_RATE, 1.0);
         values.put(FeedEntry.COLUMN_USER_DOLR_RATE, 1.0);
         values.put(FeedEntry.COLUMN_USER_GOLD, 0.0);
-        values.put(FeedEntry.COLUMN_USER_LAST_ACTIVE, currentDate());
+        values.put(FeedEntry.COLUMN_USER_LAST_ACTIVE, "");
         values.put(FeedEntry.COLUMN_USER_MODE, true);
         values.put(FeedEntry.COLUMN_USER_IS_SELECT, false);
         values.put(FeedEntry.COLUMN_USER_DISTANCE, 0.0);
@@ -300,7 +328,6 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
     @Override
     protected void onDestroy() {
-        mDbHelper.close();
         super.onDestroy();
     }
 

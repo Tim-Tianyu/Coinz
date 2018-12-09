@@ -8,13 +8,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.MissingFormatArgumentException;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText editPassword, editEmail;
+    private final Boolean disableAutoLogIn = true;
+    private final Boolean disableEmailVerify = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,26 +31,35 @@ public class MainActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.editEmail);
         editPassword = findViewById(R.id.editPassword);
         btnLogIn.setOnClickListener(v -> onClickLogIn());
-        btnSignUp.setOnClickListener(v -> onClickSignUp());
-
+        btnSignUp.setOnClickListener(v -> {
+            SignUpDialog signUpDialog = new SignUpDialog(MainActivity.this, mAuth);
+            signUpDialog.show();
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        // TODO currentUser.isEmailVerified()
-        if (currentUser != null) {
+
+        if (!disableAutoLogIn && currentUser != null && (currentUser.isEmailVerified() || disableEmailVerify )) {
             Intent intent = new Intent(MainActivity.this, LoadActivity.class);
             intent.putExtra("userId", currentUser.getUid());
             startActivity(intent);
-            finish();
         }
     }
 
     private void onClickLogIn() {
         String email = String.valueOf(editEmail.getText());
         String password = String.valueOf(editPassword.getText());
+        if (email.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Empty e-mail", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Empty password", Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -53,42 +67,22 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("INFO", "signInWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         assert user != null;
-                        // can be replace by currentUser.isEmailVerified()
-                        if (true) {
+                        // can be replace by
+                        if ((user.isEmailVerified() || disableEmailVerify)) {
                             Intent intent = new Intent(MainActivity.this, LoadActivity.class);
                             intent.putExtra("userId", user.getUid());
                             startActivity(intent);
-                            finish();
                         } else {
                             Toast.makeText(MainActivity.this, "email not verified", Toast.LENGTH_LONG);
                         }
                     } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w( "INFO", "signInWithEmail:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        if (FirebaseNetworkException.class.isInstance(task.getException())){
+                            Toast.makeText(MainActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.w( "INFO", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                });
-    }
-
-    private void onClickSignUp() {
-        String email = String.valueOf(editEmail.getText());
-        String password = String.valueOf(editPassword.getText());
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("INFO", "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(MainActivity.this, "E-mail have been sent",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w("INFO", "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    // ...
                 });
     }
 

@@ -122,8 +122,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             map = mapboxMap;
             // Set user interface options
             map.getUiSettings().setCompassEnabled(true);
-            map.getUiSettings().setZoomControlsEnabled(false);
-            map.setMaxZoomPreference(200.0);
+            map.getUiSettings().setZoomControlsEnabled(true);
+            //map.setMaxZoomPreference(1);
             map.setOnMarkerClickListener(marker -> {
                 Coin coin = Coin.getCoinByMarker(marker);
                 if (coin != null && Coin.inRanged(originLocation, coin)) {
@@ -176,7 +176,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @SuppressWarnings("MissingPermission")
     private void initializeLocationEngine() {
         LatLng latLng = new LatLng(-3.188758, 55.943680);
-        map.setCameraPosition(new CameraPosition.Builder().target(latLng).build());
+        map.setCameraPosition(new CameraPosition.Builder().target(latLng).zoom(22).build());
         locationEngine = new LocationEngineProvider(this)
                 .obtainBestLocationEngineAvailable();
         locationEngine.setInterval(5000); // preferably every 5 seconds
@@ -226,7 +226,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             originLocation = location;
             setCameraPosition(location);
-            reRenderMarkers();
+            if (selectedMode == TREASURE_HUNT){
+                reRenderMarkers();
+            }
         }
     }
 
