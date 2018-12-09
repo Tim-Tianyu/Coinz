@@ -42,7 +42,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
-        mDbHelper = new FeedReaderDbHelper(LoadActivity.this);
+        mDbHelper = MainActivity.mDbHelper;
         userId = getIntent().getStringExtra("userId");
     }
 
@@ -95,6 +95,9 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
             // first time on this device
             Log.i(TAG, "new user on this device");
             createNewUser();
+            User.walkingDistance = 0.0;
+            gameModeSelected = false;
+            Reward.currentLevel = 0;
             loadBankAndCoinListFromRemote();
         } else {
             assert (userCursor.getCount() == 1);
@@ -120,6 +123,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
                 } else {
                     this.startActivity(new Intent(this, gameSelectActivity.class));
                 }
+                finish();
             } else {
                 // different date from last download
                 userCursor.close();
@@ -296,6 +300,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
         } else {
             this.startActivity(new Intent(this, gameSelectActivity.class));
         }
+        finish();
     }
 
     private void createNewUser() {

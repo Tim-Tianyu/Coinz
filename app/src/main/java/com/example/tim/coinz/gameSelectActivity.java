@@ -19,12 +19,14 @@ public class gameSelectActivity extends AppCompatActivity {
             updateLocalGameMode(MapActivity.NORMAL);
             MapActivity.selectedMode = MapActivity.NORMAL;
             startActivity(intent);
+            finish();
         });
         Button btnHunt = findViewById(R.id.activity_game_select_btn_hunt);
         btnHunt.setOnClickListener(v -> {
             updateLocalGameMode(MapActivity.TREASURE_HUNT);
             MapActivity.selectedMode = MapActivity.TREASURE_HUNT;
             startActivity(intent);
+            finish();
         });
     }
 

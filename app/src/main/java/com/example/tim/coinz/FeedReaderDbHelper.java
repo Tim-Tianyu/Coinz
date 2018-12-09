@@ -43,6 +43,9 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     FeedEntry.COLUMN_USER_REWARD_LEVEL + " INTEGER," +
                     FeedEntry.COLUMN_USER_DISTANCE + " DOUBLE)";
 
+    private static final String SQL_DELETE_TABLE_USER = "DELETE FROM " + FeedEntry.TABLE_USER  + ";";
+    private static final String SQL_DELETE_TABLE_COIN = "DELETE FROM " + FeedEntry.TABLE_COIN  + ";";
+
     FeedReaderDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -58,5 +61,10 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // no upgrade plan
+    }
+
+    void cleanDatabase(SQLiteDatabase db){
+        db.execSQL(SQL_DELETE_TABLE_USER);
+        db.execSQL(SQL_DELETE_TABLE_COIN);
     }
 }

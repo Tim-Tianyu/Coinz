@@ -1,5 +1,6 @@
 package com.example.tim.coinz;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +53,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     static final Boolean TREASURE_HUNT = false;
     static Boolean selectedMode = true;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         mAuth = FirebaseAuth.getInstance();
 
+        TextView txtGameMode = findViewById(R.id.activity_map_txt_game_mode);
+        if (selectedMode == NORMAL) {
+            txtGameMode.setText("Normal");
+        } else {
+            txtGameMode.setText("Treasure Hunt!");
+        }
         Button btnWallet = findViewById(R.id.activity_map_btn_wallet);
         btnWallet.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, WalletActivity.class)));
         Button btnBank = findViewById(R.id.activity_map_btn_bank);
@@ -75,8 +84,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         User.detachAllListener();
                         Gift.detachAllListener();
                         mAuth.signOut();
-                        startActivity(new Intent(MapActivity.this, MainActivity.class));
                         FirebaseListener.clearCurrentFirestoreData();
+                        dialog.dismiss();
                         finish();
                     })
                     .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())

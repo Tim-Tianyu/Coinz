@@ -17,19 +17,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText editPassword, editEmail;
+    static FeedReaderDbHelper mDbHelper;
 
     // this two are used for testing
     // disable auto log in if set to true
-    private final Boolean disableAutoLogIn = false;
+    private final Boolean disableAutoLogIn = true;
 
     // unverified account can also log in if set to true
-    private final Boolean disableEmailVerify = false;
+    private final Boolean disableEmailVerify = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        mDbHelper = new FeedReaderDbHelper(MainActivity.this);
         Button btnLogIn = findViewById(R.id.btnLogIn);
         Button btnSignUp = findViewById(R.id.btnSignUp);
         editEmail = findViewById(R.id.editEmail);
