@@ -12,14 +12,18 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.MissingFormatArgumentException;
-
 public class MainActivity extends AppCompatActivity {
+    // launcher activity, used for log in
 
     private FirebaseAuth mAuth;
     private EditText editPassword, editEmail;
-    private final Boolean disableAutoLogIn = true;
-    private final Boolean disableEmailVerify = true;
+
+    // this two are used for testing
+    // disable auto log in if set to true
+    private final Boolean disableAutoLogIn = false;
+
+    // unverified account can also log in if set to true
+    private final Boolean disableEmailVerify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         editPassword = findViewById(R.id.editPassword);
         btnLogIn.setOnClickListener(v -> onClickLogIn());
         btnSignUp.setOnClickListener(v -> {
+            // user want create new account
             SignUpDialog signUpDialog = new SignUpDialog(MainActivity.this, mAuth);
             signUpDialog.show();
         });
@@ -41,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        // auto log in
         if (!disableAutoLogIn && currentUser != null && (currentUser.isEmailVerified() || disableEmailVerify )) {
             Intent intent = new Intent(MainActivity.this, LoadActivity.class);
             intent.putExtra("userId", currentUser.getUid());
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Empty password", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // log in code copied form firestore
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {

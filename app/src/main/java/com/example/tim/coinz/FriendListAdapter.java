@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder>{
+    // adapter for friend list
     private ArrayList<User> friendList;
     private LayoutInflater mInflater;
     private AlertDialog dialog;
@@ -21,7 +23,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
     private static FriendListAdapter currentAdapter;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         TextView txtName;
         Button btnDelete;
 
@@ -37,7 +38,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         this.friendList = friendList;
         AlertDialog.Builder builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
         dialog = builder.setTitle("Delete Friend")
-                .setMessage("Are you sure you want to delete this friend?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> User.deleteFriend(friendList.get(currentPosition)))
                 .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -56,7 +56,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         User friend = friendList.get(i);
         holder.txtName.setText(friend.getName());
         holder.btnDelete.setOnClickListener(v -> {
+            // show dialog to confirm if user want to delete this friend
             currentPosition = holder.getAdapterPosition();
+            dialog.setMessage(String.format(Locale.UK, "Are your sure you want to delete your friend %s", friend.getName()));
             dialog.show();
         });
     }
@@ -78,6 +80,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.My
         return friendList.size();
     }
 
+    // below record lifecycle for adapter, used to update adapter in real time from firebase listener
     static void onCurrentAdapterEnd(){
         haveFocus = false;
         currentAdapter = null;

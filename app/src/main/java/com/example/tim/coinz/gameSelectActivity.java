@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 public class gameSelectActivity extends AppCompatActivity {
-
+    // Activity to choose daily game mode
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

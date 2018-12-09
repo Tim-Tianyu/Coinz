@@ -36,9 +36,9 @@ import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin;
 import com.example.tim.coinz.FeedReaderContract.FeedEntry;
 
 import java.util.List;
-import java.util.Locale;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationEngineListener{
+    // activity to show map
     private MapView mapView;
     private MapboxMap map;
     private LocationEngine locationEngine;
@@ -66,6 +66,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnFriend.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, FriendActivity.class)));
         Button btnLogOut = findViewById(R.id.activity_map_btn_log_out);
         btnLogOut.setOnClickListener(v -> {
+            // show dialog to confirm log out
             AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this, android.R.style.Theme_Material_Dialog_Alert);
             builder.setTitle("Log out")
                     .setMessage("Are you sure you want to log out?")
@@ -125,6 +126,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             map.getUiSettings().setZoomControlsEnabled(true);
             //map.setMaxZoomPreference(1);
             map.setOnMarkerClickListener(marker -> {
+                // collect coin by click the marker
                 Coin coin = Coin.getCoinByMarker(marker);
                 if (coin != null && Coin.inRanged(originLocation, coin)) {
                     Toast.makeText(MapActivity.this, "Collected " + Double.toString(coin.getValue()) + " " + coin.getCurrency(), Toast.LENGTH_LONG).show();
@@ -133,6 +135,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } else if (coin == null) {
                     Log.d(tag, "Unknown coins");
                 } else {
+                    // out of collecting range
                     Toast.makeText(MapActivity.this, "Out of Range", Toast.LENGTH_LONG).show();
                 }
                 return true;
@@ -141,7 +144,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             enableLocation();
         }
         for (Coin coin : Coin.coinsList){
+            // produce maker by data in coin object
             Marker marker = map.addMarker(new MarkerOptions().icon(getIconByName(coin.getCurrency().name())).title(coin.getCurrency().name()).snippet(coin.getSymbol()).position(coin.getPosition()));
+            // bind marker with coin
             coin.setMarker(marker);
         }
     }
@@ -221,11 +226,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.d(tag, "[onLocationChanged] location is null");
         } else {
             Log.d(tag, "[onLocationChanged] location is not null");
+            // record walking distance
             if (originLocation != null && ! recordWalkingDistance(originLocation, location)){
                 Toast.makeText(MapActivity.this, "Going too fast", Toast.LENGTH_SHORT).show();
             }
             originLocation = location;
             setCameraPosition(location);
+            // when selected game mode is treasure hunt, we need to re render markers
             if (selectedMode == TREASURE_HUNT){
                 reRenderMarkers();
             }
@@ -235,11 +242,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private boolean recordWalkingDistance(Location prev, Location now){
         float max = 20;
         float dist =  prev.distanceTo(now);
-        Toast.makeText(MapActivity.this, String.format(Locale.UK, "%1$.2f", dist), Toast.LENGTH_SHORT).show();
+        // this is for testing
+        // Toast.makeText(MapActivity.this, String.format(Locale.UK, "%1$.2f", dist), Toast.LENGTH_SHORT).show();
+
+        // ignore gps glitches or going too fast (car, bike)
         if (dist > max) return false;
         User.walkingDistance += dist;
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_USER_DISTANCE, User.walkingDistance);
+        // write walking distance into local db
         SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
         String selection = FeedEntry.COLUMN_USER_ID + " LIKE ?";
         String[] selectionArgs = { User.currentUser.getUserId() };
@@ -248,6 +259,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void reRenderMarkers(){
+        // remove markers outside view range, add markers inside view range
         for (Coin coin : Coin.coinsList){
             Marker marker = coin.getMarker();
             if (Coin.inViewRange(originLocation, coin)){

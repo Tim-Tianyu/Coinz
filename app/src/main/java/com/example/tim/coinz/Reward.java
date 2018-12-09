@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.tim.coinz.FeedReaderContract.FeedEntry;
 
 class Reward {
+    // represent daily reward
     static final int LEVEL_0 = 0;
     private static final int LEVEL_1 = 1;
     private static final int LEVEL_2 = 2;
@@ -43,6 +44,7 @@ class Reward {
     }
 
     static void nextLevel(){
+        // next reward level
         int level = currentLevel;
         if (level == LEVEL_0) currentLevel = LEVEL_1;
         else if (level == LEVEL_1) currentLevel = LEVEL_2;
@@ -62,6 +64,7 @@ class Reward {
     }
 
     static Reward getCurrentReward(){
+        // get reward based on current level
         if (currentLevel == LEVEL_END) return null;
         return rewardLevels[currentLevel];
     }

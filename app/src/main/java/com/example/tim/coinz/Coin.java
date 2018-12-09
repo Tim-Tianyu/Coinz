@@ -78,6 +78,7 @@ public class Coin {
 
     static void sendCoinAsGift(Dialog dialog, CoinListAdapter adapter, Coin coin, User friend){
         if (coin.currency.equals(Currency.UNKNOWN)) return;
+        // create gift on cloud database
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference userCollection = db.collection("USER");
         Double value = coin.value * Bank.theBank.getRates().get(coin.currency);
@@ -123,11 +124,13 @@ public class Coin {
     }
 
     static boolean inRanged(Location location, Coin coin) {
-        double range = 100;
+        // collecting range
+        double range = 25;
         return coin.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
     }
 
     static boolean inViewRange(Location location, Coin coin){
+        // view range (used in treasure hunt mode
         double range = 100;
         return coin.getPosition().distanceTo(new LatLng(location.getLatitude(),location.getLongitude())) < range;
     }
@@ -148,6 +151,7 @@ public class Coin {
     }
 
     static void collectCoin(Coin coin){
+        // update local db
         SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
         ContentValues coinValues = new ContentValues();
         coinValues.put(FeedEntry.COLUMN_COIN_STATUS, true);
@@ -167,6 +171,7 @@ public class Coin {
     }
 
     static void discardCoin(Coin coin) {
+        // remove coin in local db
         SQLiteDatabase db = LoadActivity.mDbHelper.getWritableDatabase();
         String selectionCoin = FeedEntry.COLUMN_COIN_ID + " LIKE ?";
         String[] selectionCoinArgs = { coin.getId() };

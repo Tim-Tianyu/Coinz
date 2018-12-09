@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 class SVGtoBitmap {
+    // used to convert svg to bitmap
     private  static String TAG = "SVGtoBitmap";
 
     private static Bitmap getBitmap(VectorDrawable vectorDrawable) {

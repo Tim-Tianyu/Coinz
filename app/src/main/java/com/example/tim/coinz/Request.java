@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 class Request {
+    // represent friend requests received or send
     enum Status {
         PENDING,
         ACCEPT,
@@ -22,8 +23,11 @@ class Request {
     private String requestId;
     private String senderId;
     private String receiverId;
+    // not used now, will be useful sometime
     private Status status;
     private Timestamp timestamp;
+
+    // listeners for firestore
     private static ListenerRegistration requestStateListener;
     private static ListenerRegistration receiveRequestListener;
 
@@ -31,6 +35,8 @@ class Request {
     static final Double ACCEPT = 1.0;
     static final Double DENY = 2.0;
     private static final String TAG = "Request";
+
+    // static arrayList hold the requests
     static ArrayList<Request> sentRequests = new ArrayList<>();
     static ArrayList<Request> receivedRequests = new ArrayList<>();
 
@@ -85,6 +91,7 @@ class Request {
     }
 
     static void addRequestStateChangeListener() {
+        // add listener to listen for any sent request being accepted or deny
         if (requestStateListener != null) requestStateListener.remove();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         requestStateListener = db.collection("FRIEND_REQUEST").whereEqualTo("Sender", db.collection("USER").document(User.currentUser.getUserId()))
@@ -106,6 +113,7 @@ class Request {
                                     return;
                                 }
                                 sentRequests.remove(request);
+                                // update friend list if request is accept
                                 User.updateFriendListOnRequestAccept(request.receiverId);
                             } else if (status.equals(Request.DENY)) {
                                 Request request = findRequestById(sentRequests, snapshot.getId());
@@ -121,6 +129,7 @@ class Request {
     }
 
     static void addReceiveRequestListener(){
+        // add listener to listen for any new request being received
         if (receiveRequestListener != null) receiveRequestListener.remove();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         receiveRequestListener = db.collection("FRIEND_REQUEST").whereEqualTo("Receiver", db.collection("USER").document(User.currentUser.getUserId())).whereEqualTo("Status", PENDING)
@@ -135,15 +144,12 @@ class Request {
                             QueryDocumentSnapshot snapshot = dc.getDocument();
                             String requestId = snapshot.getId();
                             if (findRequestById(receivedRequests, requestId) != null) return;
+                            Request newRequest = new Request(requestId, Objects.requireNonNull(snapshot.getDocumentReference("Sender")).getId(), Objects.requireNonNull(snapshot.getDocumentReference("Receiver")).getId(), Request.DoubleToStatus(Objects.requireNonNull(snapshot.getDouble("Status"))), snapshot.getTimestamp("Time"));
+
+                            // adapter will be null if it don't have focus currently
                             RequestListAdapter adapter = RequestListAdapter.getCurrentAdapter();
-                            Request newRequest;
-                            try{
-                                newRequest = new Request(requestId, Objects.requireNonNull(snapshot.getDocumentReference("Sender")).getId(), Objects.requireNonNull(snapshot.getDocumentReference("Receiver")).getId(), Request.DoubleToStatus(Objects.requireNonNull(snapshot.getDouble("Status"))), snapshot.getTimestamp("Time"));
-                            } catch (NullPointerException ex) {
-                                Log.w(TAG, ex);
-                                return;
-                            }
                             if (adapter != null) {
+                                // update adapter as it has focus
                                 adapter.addItem(newRequest);
                             } else {
                                 receivedRequests.add(newRequest);

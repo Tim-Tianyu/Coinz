@@ -3,7 +3,7 @@ package com.example.tim.coinz;
 import android.provider.BaseColumns;
 
 final class FeedReaderContract {
-
+    // define names used for tables and entries
     private FeedReaderContract() {}
 
     static class FeedEntry implements BaseColumns {

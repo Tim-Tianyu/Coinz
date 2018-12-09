@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftListAdapter.MyViewHolder> {
+    // adapter for list of gift receive
     private ArrayList<Gift> giftList;
     private LayoutInflater mInflater;
     private static boolean haveFocus;
@@ -48,11 +49,14 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Gift gift = giftList.get(i);
         User sender = User.findFriendById(gift.getSenderId());
+        // gift from friend user have deleted will be show as gift from unknown friend
         if (sender != null) myViewHolder.txtName.setText(String.format(Locale.UK,"%s", sender.getName()));
         else myViewHolder.txtName.setText("Unknown friend");
 
+        // show gold value for the gift
         myViewHolder.txtValue.setText(String.format(Locale.UK,"%1$.2f", gift.getValue()));
         myViewHolder.btnReceive.setOnClickListener(v -> {
+            // receive gift
             int position = myViewHolder.getAdapterPosition();
             Bank.theBank.receiveGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
         });
@@ -75,6 +79,7 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         return giftList.size();
     }
 
+    // below record lifecycle for adapter, used to update adapter in real time from firebase listener
     static void onCurrentAdapterEnd(){
         haveFocus = false;
         currentAdapter = null;

@@ -12,14 +12,20 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Gift{
+    // represent gift sent or received by user
     private String giftId;
     private Double value;
-    private Boolean received;
     private String senderId;
     private String receiverId;
+    // not used now, but will be useful
+    private Boolean received;
     private Timestamp timestamp;
+
+    // static arrayLists hold gifts
     static ArrayList<Gift> sentGifts = new ArrayList<>();
     static ArrayList<Gift> receivedGifts = new ArrayList<>();
+
+    // listeners for firestore
     private static ListenerRegistration receiveGiftListener;
     private static ListenerRegistration sentGiftReceivedListener;
     private static String TAG = "Gift";
@@ -59,6 +65,7 @@ public class Gift{
     }
 
     static void addReceiveGiftListener(){
+        // add listener to listen for any new gift sent to current user
         if (receiveGiftListener != null) receiveGiftListener.remove();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         receiveGiftListener = db.collection("GIFT").whereEqualTo("Receiver",db.collection("USER").document(User.currentUser.getUserId())).whereEqualTo("IsReceived", false)
@@ -73,15 +80,12 @@ public class Gift{
                             QueryDocumentSnapshot snapshot = dc.getDocument();
                             String giftId = snapshot.getId();
                             if (findGiftByGiftId(receivedGifts, giftId) != null) return;
+                            Gift newGift = new Gift(snapshot.getId(), snapshot.getDouble("Value"), snapshot.getBoolean("IsReceived"), Objects.requireNonNull(snapshot.getDocumentReference("Sender")).getId(), Objects.requireNonNull(snapshot.getDocumentReference("Receiver")).getId(), snapshot.getTimestamp("Time"));
+
+                            // adapter will be null if it don't have focus currently
                             ReceiveGiftListAdapter adapter = ReceiveGiftListAdapter.getCurrentAdapter();
-                            Gift newGift;
-                            try {
-                                newGift = new Gift(snapshot.getId(), snapshot.getDouble("Value"), snapshot.getBoolean("IsReceived"), Objects.requireNonNull(snapshot.getDocumentReference("Sender")).getId(), Objects.requireNonNull(snapshot.getDocumentReference("Receiver")).getId(), snapshot.getTimestamp("Time"));
-                            } catch (NullPointerException ex) {
-                                Log.w(TAG, ex);
-                                return;
-                            }
                             if (adapter != null) {
+                                // update adapter as it has focus
                                 adapter.addItem(newGift);
                             } else {
                                 receivedGifts.add(newGift);
@@ -92,6 +96,7 @@ public class Gift{
     }
 
     static void addSentGiftReceivedListener(){
+        // add listener to listen for any gift sent by current user being received
         if (sentGiftReceivedListener != null) sentGiftReceivedListener.remove();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         sentGiftReceivedListener = db.collection("GIFT").whereEqualTo("Sender", db.collection("USER").document(User.currentUser.getUserId()))

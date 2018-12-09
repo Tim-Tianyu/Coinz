@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.MyViewHolder>{
+    // adapter for list of friend request
     private ArrayList<Request> receivedRequestList;
     private LayoutInflater mInflater;
     private FriendListAdapter friendListAdapter;
@@ -48,6 +49,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Request request = receivedRequestList.get(i);
+        // only uid will be showed for friend request
         myViewHolder.txtId.setText(request.getSenderId());
         myViewHolder.btnAccept.setOnClickListener(v -> {
             int position = myViewHolder.getAdapterPosition();
@@ -76,6 +78,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         return receivedRequestList.size();
     }
 
+    // below record lifecycle for adapter, used to update adapter in real time from firebase listener
     static void onCurrentAdapterEnd(){
         haveFocus = false;
         currentAdapter = null;

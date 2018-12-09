@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class BankActivity extends AppCompatActivity {
+    // activity to show user account, and used for exchange currency
     private Button transferGold, transferCurrency;
     private TextView valueGold, valueDolr, valuePenny, valueQuid, valueShil,
             titleGold, titleDolr, titlePenny, titleQuid, titleShil;
@@ -65,6 +66,7 @@ public class BankActivity extends AppCompatActivity {
     }
 
     private void bindEvents(){
+        // set seek bar event (update textView)
         seekGold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -135,6 +137,7 @@ public class BankActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
+        // transfer gold to currency
         transferGold.setOnClickListener(v -> {
             Coin.Currency currency;
             if (radioDolr.isChecked()) {
@@ -159,6 +162,7 @@ public class BankActivity extends AppCompatActivity {
             refreshLabels();
         });
 
+        // transfer gold to currency
         transferCurrency.setOnClickListener(v -> {
             Double percentageDolr, percentagePenny, percentageQuid, percentageShil;
             percentageDolr = 1.0 * seekDolr.getProgress() / seekDolr.getMax();

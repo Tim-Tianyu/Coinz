@@ -13,9 +13,11 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     private AsyncResponse delegate;
 
     public interface AsyncResponse {
+        // AsyncResponse is implemented by loadActivity
         void processFinish(String output);
     }
 
+    //AsyncResponse delegate is always the loadActivity
     DownloadFileTask(AsyncResponse delegate){
         this.delegate = delegate;
     }
@@ -52,6 +54,7 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        // send result back to loadActivity
         delegate.processFinish(result);
     }
 }

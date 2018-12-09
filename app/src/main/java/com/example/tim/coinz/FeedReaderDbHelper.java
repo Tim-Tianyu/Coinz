@@ -11,6 +11,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Local.db";
     private static final String TAG = "FeedReaderDbHelper";
+    // SQL for create tables
     private static final String SQL_CREATE_TABLE_COIN =
             "CREATE TABLE " + FeedEntry.TABLE_COIN + " (" +
                     FeedEntry._ID + " INTEGER PRIMARY KEY," +
@@ -48,6 +49,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // create tables
         Log.i(TAG, "creating tables");
         db.execSQL(SQL_CREATE_TABLE_COIN);
         db.execSQL(SQL_CREATE_TABLE_USER);

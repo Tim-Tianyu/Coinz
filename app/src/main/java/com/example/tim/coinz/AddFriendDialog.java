@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddFriendDialog extends Dialog {
+    // dialog to show when user want to add new friend
     private ClipboardManager clipboard;
     private ClipData clip = ClipData.newPlainText("UID", User.currentUser.getUserId());
     Context context;
@@ -39,7 +40,9 @@ public class AddFriendDialog extends Dialog {
         EditText etUid = findViewById(R.id.add_friend_dialog_et_uid);
         Button btnSend = findViewById(R.id.add_friend_dialog_btn_send);
         btnSend.setOnClickListener(v -> {
+            // try to send request to friend
             String userId = etUid.getText().toString();
+            // below are list of invalid situation
             if (userId.equals("")){
                 Toast.makeText(context, "Empty UID", Toast.LENGTH_SHORT).show();
                 return;
@@ -56,6 +59,7 @@ public class AddFriendDialog extends Dialog {
                 Toast.makeText(context, "Already received a request from this user", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // add friend request to firestore
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> data = new HashMap<>();
             CollectionReference collectionReference = db.collection("USER");
@@ -80,6 +84,7 @@ public class AddFriendDialog extends Dialog {
 
         Button btnCopy = findViewById(R.id.add_friend_dialog_btn_copy);
         btnCopy.setOnClickListener(v -> {
+            // copy user's own Uid to clipboard
             clipboard.setPrimaryClip(clip);
             Toast.makeText(context, "Copy to clipboard", Toast.LENGTH_SHORT).show();
         });

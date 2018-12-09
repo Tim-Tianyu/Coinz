@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectListAdapter.MyViewHolder> {
+    // adapter for list of friends to select when user want to send gift
     private ArrayList<User> friendList;
     private Coin giftCoin;
     private LayoutInflater mInflater;
@@ -22,7 +23,6 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
     private static FriendSelectListAdapter currentAdapter;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         TextView txtName;
         Button btnSelect;
 
@@ -57,6 +57,7 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
         holder.txtName.setText(friend.getName());
         holder.btnSelect.setText("Select");
         holder.btnSelect.setOnClickListener(v -> {
+            // select friend to send gift
             int position = holder.getAdapterPosition();
             User friend1 = friendList.get(position);
             Coin.sendCoinAsGift(dialog, adapter, giftCoin, friend1);
@@ -85,6 +86,7 @@ public class FriendSelectListAdapter extends RecyclerView.Adapter<FriendSelectLi
         return friendList.size();
     }
 
+    // below record lifecycle for adapter, used to update adapter in real time from firebase listener
     static void onCurrentAdapterEnd(){
         haveFoucus = false;
         currentAdapter = null;

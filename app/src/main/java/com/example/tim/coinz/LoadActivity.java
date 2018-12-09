@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class LoadActivity extends AppCompatActivity implements DownloadFileTask.AsyncResponse {
+    // activity to load all the local and cloud data
     public static FirebaseListener firebaseListener = new FirebaseListener();
     static FeedReaderDbHelper mDbHelper;
     private static final String TAG = "LoadActivity";
@@ -47,11 +48,13 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
     @Override
     protected void onStart() {
+        // first download firebase data
         firebaseListener.downloadData(LoadActivity.this, userId);
         super.onStart();
     }
 
     public void onCompleteDownloadFirebaseData() {
+        // then load user data
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String[] projection = {
                 BaseColumns._ID,
@@ -126,6 +129,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     }
 
     private void loadBankAndCoinListFromLocal(Cursor userCursor){
+        // load local coins data and bank exchange rate
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String[] projection = {
                 BaseColumns._ID,
@@ -153,6 +157,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
         assert (coinCursor.getCount() == 50);
         int dailyCoins = 0;
+        // coins data
         while (coinCursor.moveToNext()){
             String id = coinCursor.getString(coinCursor.getColumnIndex(FeedEntry.COLUMN_COIN_ID));
             Double value = coinCursor.getDouble(coinCursor.getColumnIndex(FeedEntry.COLUMN_COIN_VALUE));
@@ -170,6 +175,8 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
             }
         }
         coinCursor.close();
+
+        // bank exchange rate
         Double rateDolr = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_DOLR_RATE));
         Double ratePenny = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_PENY_RATE));
         Double rateQuid = userCursor.getDouble(userCursor.getColumnIndex(FeedEntry.COLUMN_USER_QUID_RATE));
@@ -178,6 +185,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     }
 
     private void loadBankAndCoinListFromRemote(){
+        // download geo-json
         DownloadFileTask task = new DownloadFileTask(LoadActivity.this);
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -195,14 +203,16 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
     // this will be called when the map finish downloaded (after loadBankAndCoinListFromRemote);
     @Override
     public void processFinish(String jsonString) {
+        // load coins and bank exchange rate form geo-json
         double rateShil, rateDolr, ratePenny, rateQuid;
+
+        // empty string will be returned if network issue happened (IO exception in downloadFileTask)
         if (jsonString.isEmpty()) {
+            // dialog to report network issue
             AlertDialog.Builder builder = new AlertDialog.Builder(LoadActivity.this, android.R.style.Theme_Material_Dialog_Alert);
             builder.setTitle("Network issue")
                     .setMessage("Experiencing network issue, try to reconnect?")
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        loadBankAndCoinListFromRemote();
-                    })
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> loadBankAndCoinListFromRemote())
                     .setNegativeButton(android.R.string.no, (dialog, which) ->{
                         dialog.dismiss();
                         finish();
@@ -232,6 +242,7 @@ public class LoadActivity extends AppCompatActivity implements DownloadFileTask.
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         String userId = User.currentUser.getUserId();
+        // use FeatureCollection to get coin data for json file
         FeatureCollection featureCollection = FeatureCollection.fromJson(jsonString);
         for (Feature feature : Objects.requireNonNull(featureCollection.features())){
             Geometry geometry = feature.geometry();

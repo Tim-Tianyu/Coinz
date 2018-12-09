@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Bank {
+    // represent user bank account
     private int dailyLimit, dailyCoins;
     private double valueDOLR, valueQUID,valueSHIL,valuePENY,valueGold;
     private double rateDOLR, rateQUID,rateSHIL,ratePENY;
 
+    // daily coin limit
     static final int normalDailyLimit = 25;
     static Bank theBank = new Bank(normalDailyLimit,0,1,1,1,1,0,0,0,0,0);
 
@@ -104,6 +106,7 @@ public class Bank {
     }
 
     void receiveGift(ReceiveGiftListAdapter current, Gift gift, int position) {
+        // update firestore when trying to receive gift
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("GIFT").document(gift.getGiftId()).update("IsReceived", true).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
@@ -122,6 +125,7 @@ public class Bank {
     }
 
     private void syncWithLocal() {
+        // update local db
         FeedReaderDbHelper mDbHelper = LoadActivity.mDbHelper;
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues userValues = new ContentValues();

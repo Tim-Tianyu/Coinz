@@ -17,11 +17,14 @@ import java.util.Set;
 
 public class User{
     private String userId;
-    //private double goldValue;
     private String name;
+    // current log in user
     static User currentUser;
+    // static friend list
     static ArrayList<User> friends = new ArrayList<>();
+    // current user's walking distance
     static Double walkingDistance = 0.0;
+    // listener for firestore
     private static ListenerRegistration friendDeleteListener;
     private static final String TAG = "USER";
 
@@ -48,6 +51,7 @@ public class User{
     }
 
     static ArrayList<User> filterFriendsBySentGift(){
+        // return list of friends that user haven't sent gift to
         Set<String> IdList= new HashSet<>();
         ArrayList<User> filtered = new ArrayList<>();
         for (Gift gift : Gift.sentGifts) {
@@ -62,8 +66,10 @@ public class User{
     }
 
     static void acceptFriendRequest(RequestListAdapter requestListAdapter, FriendListAdapter friendListAdapter, Request request, int position) {
+        // update friend request status and friend list on firestore on accept friend request
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("USER");
+        // create transaction for multiple read and write
         db.runTransaction(transaction -> {
             DocumentSnapshot documentSnapshot = transaction.get(collectionReference.document(request.getSenderId()));
             transaction.update(collectionReference.document(User.currentUser.getUserId()), "FriendList", FieldValue.arrayUnion(collectionReference.document(request.getSenderId())));
@@ -76,49 +82,52 @@ public class User{
         }).addOnFailureListener(e -> Log.w(TAG, e));
     }
 
-    static void rejectFriendRequest(RequestListAdapter adapter, Request request, int position) {
+    static void rejectFriendRequest(RequestListAdapter adapter, Request request, int position){
+        // update friend request status on accept friend request
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("FRIEND_REQUEST").document(request.getRequestId()).update("Status", Request.DENY)
                 .addOnSuccessListener(aVoid -> adapter.removeItem(position))
                 .addOnFailureListener(e -> Log.w(TAG, e));
     }
 
-    static void deleteFriend(User friend) {
+    static void deleteFriend(User friend){
+        // update friend list on firestore on delete friend
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("USER");
+        // use writeBatch for multiple write
         WriteBatch writeBatch = db.batch();
         writeBatch.update(collectionReference.document(friend.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(User.currentUser.getUserId())));
         writeBatch.update(collectionReference.document(User.currentUser.getUserId()), "FriendList",FieldValue.arrayRemove(collectionReference.document(friend.getUserId())));
         writeBatch.commit().addOnFailureListener(e -> Log.w(TAG, e));
     }
 
-    static void updateFriendListOnRequestAccept(String receiverId) {
+    static void updateFriendListOnRequestAccept(String receiverId){
+        // when sent request accept by other user
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("USER").document(receiverId).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    try {
-                        FriendListAdapter friendListAdapter = FriendListAdapter.getCurrentAdapter();
-                        FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
-                        User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
-                        if (friendListAdapter != null) {
-                            friendListAdapter.addItem(newFriend);
-                        } else {
-                            friends.add(newFriend);
-                        }
+                    FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
+                    User newFriend = new User(documentSnapshot.getId(), documentSnapshot.getString("Name"));
 
-                        if (friendSelectListAdapter != null){
-                            friendSelectListAdapter.addItem(newFriend);
-                        }
-                    } catch (NullPointerException ex){
-                        Log.w(TAG, ex);
+                    // adapter will be null if it don't have focus currently
+                    FriendListAdapter friendListAdapter = FriendListAdapter.getCurrentAdapter();
+                    if (friendListAdapter != null) {
+                        // update adapter as it has focus
+                        friendListAdapter.addItem(newFriend);
+                    } else {
+                        friends.add(newFriend);
+                    }
+
+                    if (friendSelectListAdapter != null){
+                        friendSelectListAdapter.addItem(newFriend);
                     }
                 })
                 .addOnFailureListener(e -> Log.w(TAG, e));
     }
 
     static void addFriendDeleteListener(){
+        // listener to listen for deletion of user as a friend from another user
         if (friendDeleteListener != null) friendDeleteListener.remove();
-        // reattach
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("USER");
         friendDeleteListener = collectionReference.whereArrayContains("FriendList", collectionReference.document(User.currentUser.getUserId()))
@@ -128,7 +137,7 @@ public class User{
                         return;
                     }
 
-                    for (DocumentChange dc : Objects.requireNonNull(queryDocumentSnapshots).getDocumentChanges()) {
+                    for (DocumentChange dc : Objects.requireNonNull(queryDocumentSnapshots).getDocumentChanges()){
                         if (dc.getType().equals(DocumentChange.Type.REMOVED)) {
                             User user = findFriendById(dc.getDocument().getId());
                             if (user == null) {
@@ -136,14 +145,18 @@ public class User{
                                 return;
                             }
                             int position = friends.indexOf(user);
+                            // adapter will be null if it don't have focus currently
                             FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
                             if (adapter != null) {
+                                // update adapter as it has focus
                                 adapter.removeItem(position);
                             } else {
                                 friends.remove(position);
                             }
+                            // adapter will be null if it don't have focus currently
                             FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
                             if (friendSelectListAdapter != null) {
+                                // update adapter as it has focus
                                 friendSelectListAdapter.removeItemById(user.userId);
                             }
                         }

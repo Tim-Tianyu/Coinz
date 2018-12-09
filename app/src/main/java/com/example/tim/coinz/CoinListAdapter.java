@@ -14,11 +14,11 @@ import android.widget.Toast;
 import java.util.Locale;
 
 public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyViewHolder>{
+    // adapter for list of coin in wallet
     private LayoutInflater mInflater;
     private Context context;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         TextView mTextView;
         ImageView mImageView;
         Button btnBank;
@@ -41,15 +41,12 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
     @NonNull
     @Override
     public CoinListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // create a new view
         View view = mInflater.inflate(R.layout.coin_list_row, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         Coin coin = Coin.collectedCoinsList.get(position);
         String s = String.format(Locale.UK, "%s: %f", coin.getCurrency().toString(),  coin.getValue());
         holder.mTextView.setText(s);
@@ -64,24 +61,30 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
                 break;
         }
         holder.btnBank.setOnClickListener(v -> {
+            // save coin into bank
             int position1 = holder.getAdapterPosition();
             Double bonus = 1.0;
+            // 1.5 bonus in TREASURE_HUNT mode
             if (MapActivity.selectedMode == MapActivity.TREASURE_HUNT) bonus = 1.5;
             boolean success = Bank.theBank.saveCoin(coin, bonus);
             if (!success) {
                 Toast.makeText(context, "Reach daily limit", Toast.LENGTH_SHORT).show();
             } else {
+                // 1.5 bonus in TREASURE_HUNT mode
                 if (MapActivity.selectedMode == MapActivity.TREASURE_HUNT) Toast.makeText(context, "Get 150% bonus", Toast.LENGTH_SHORT).show();
+                // discard thi coin in wallet
                 Coin.discardCoin(Coin.collectedCoinsList.get(position1));
                 notifyItemRemoved(position1);
                 notifyItemRangeChanged(position1, Coin.collectedCoinsList.size());
             }
         });
         holder.btnGift.setOnClickListener(new View.OnClickListener() {
+            // select the coin that user want to send as gift
             int position = holder.getAdapterPosition();
             Coin coin = Coin.collectedCoinsList.get(position);
             @Override
             public void onClick(View v) {
+                // need to select friend to send the gift to
                 FriendSelectListAdapter adapter = new FriendSelectListAdapter(context, CoinListAdapter.this, coin, User.filterFriendsBySentGift());
                 ListViewDialog dialog = new ListViewDialog(context, adapter);
                 adapter.setDialog(dialog);

@@ -1,9 +1,7 @@
 package com.example.tim.coinz;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.firestore.DocumentReference;
@@ -13,24 +11,25 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 class FirebaseListener {
     private static final String TAG = "FirebaseListener";
+    // flags for success download
     private static Boolean isUserDownload = false;
     private static Boolean isFriendsDownload = false;
     private static Boolean isSentGiftsDownload = false;
     private static Boolean isReceivedGiftsDownload = false;
     private static Boolean isSentRequestsDownload = false;
     private static Boolean isReceivedRequestsDownload = false;
+    // flags for thread finish
     private static Boolean isUserDownloadTaskFinished = false;
     private static Boolean isFriendsDownloadTaskFinished = false;
     private static Boolean isSentGiftsDownloadTaskFinished = false;
     private static Boolean isReceivedGiftsDownloadTaskFinished = false;
     private static Boolean isSentRequestsDownloadTaskFinished = false;
     private static Boolean isReceivedRequestsDownloadTaskFinished = false;
+    // flag for error
     private static Boolean isErrorReported = false;
     private static Exception reportedException;
     private static String userIdTemp;
@@ -39,6 +38,7 @@ class FirebaseListener {
 
     void downloadData(LoadActivity activity, String userId){
         clearCurrentFirestoreData();
+        // reset flags
         isUserDownload = false;
         isFriendsDownload = false;
         isSentGiftsDownload = false;
@@ -52,8 +52,8 @@ class FirebaseListener {
         isSentRequestsDownloadTaskFinished = false;
         isReceivedRequestsDownloadTaskFinished = false;
         isErrorReported = false;
+        // start download threads
         userIdTemp = userId;
-        userId = "dwqrqwer";
         downloadUser(activity, userId);
         downloadFriends(activity, userId);
         downloadSentGifts(activity, userId);
@@ -128,7 +128,6 @@ class FirebaseListener {
 
     private void downloadReceivedGifts(LoadActivity activity, String userId) {
         DocumentReference userRef = db.collection("USER").document(userId);
-        // only need unreceived gift to receive gift
         db.collection("GIFT").whereEqualTo("Receiver", userRef).whereEqualTo("IsReceived", false).get().addOnCompleteListener(task -> {
             Log.i(TAG, "receivedGifts task complete");
             isReceivedGiftsDownloadTaskFinished = true;
@@ -196,17 +195,22 @@ class FirebaseListener {
     }
 
     private void downloadStateChecking(LoadActivity activity) {
+        // this will be called every time a download have successfully complete
+        // check flags for all the download (if all success or not)
         if (isUserDownload && isFriendsDownload && isSentGiftsDownload && isReceivedGiftsDownload && isSentRequestsDownload && isReceivedRequestsDownload){
+            // add listeners
             Request.addRequestStateChangeListener();
             Request.addReceiveRequestListener();
             User.addFriendDeleteListener();
             Gift.addReceiveGiftListener();
             Gift.addSentGiftReceivedListener();
+            // send complete signal to loadActivity
             activity.onCompleteDownloadFirebaseData();
         }
     }
 
     private void downloadFail(LoadActivity activity, Exception ex) {
+        // this will be called when task is fail
         Log.w(TAG, "Error getting documents.", ex);
         reportedException = ex;
         isErrorReported = true;
@@ -214,15 +218,16 @@ class FirebaseListener {
     }
 
     private void downloadStateCheckingWhenFailing(LoadActivity activity){
+        // this will be called every time a thread is completed (success or not) after error is reported
+        // check if all task is finished
         if (isUserDownloadTaskFinished && isFriendsDownloadTaskFinished && isSentGiftsDownloadTaskFinished &&
                 isReceivedGiftsDownloadTaskFinished && isSentRequestsDownloadTaskFinished && isReceivedRequestsDownloadTaskFinished) {
             if (FirebaseNetworkException.class.isInstance(reportedException) || FirebaseFirestoreException.class.isInstance(reportedException)){
+                // most of time it's the network issue
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity, android.R.style.Theme_Material_Dialog_Alert);
                 builder.setTitle("Network Issue")
                         .setMessage("Experiencing network issue right now, try to reconnect?")
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            downloadData(activity, userIdTemp);
-                        })
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> downloadData(activity, userIdTemp))
                         .setNegativeButton(android.R.string.no, (dialog, which) ->{
                             dialog.dismiss();
                             activity.finish();
@@ -231,12 +236,11 @@ class FirebaseListener {
                         .setCancelable(false)
                         .create().show();
             } else {
+                // this is never seen (unknown exception)
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity, android.R.style.Theme_Material_Dialog_Alert);
                 builder.setTitle("Unknown Exception")
                         .setMessage(reportedException.getMessage())
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            downloadData(activity, userIdTemp);
-                        })
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> downloadData(activity, userIdTemp))
                         .setNegativeButton(android.R.string.no, (dialog, which) ->{
                             dialog.dismiss();
                             activity.finish();
