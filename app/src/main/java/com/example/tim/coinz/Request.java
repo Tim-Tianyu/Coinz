@@ -1,15 +1,22 @@
 package com.example.tim.coinz;
 
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 class Request {
@@ -158,6 +165,29 @@ class Request {
                     }
                 });
 
+    }
+
+    static void sendNewRequest(Context context, String userId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> data = new HashMap<>();
+        CollectionReference collectionReference = db.collection("USER");
+        DocumentReference documentReference = collectionReference.document(User.currentUser.getUserId());
+        documentReference.getPath();
+
+        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime());
+        data.put("Status", Request.PENDING);
+        data.put("Time", timestamp);
+        data.put("Sender", collectionReference.document(User.currentUser.getUserId()));
+        data.put("Receiver", collectionReference.document(userId));
+        db.collection("FRIEND_REQUEST").add(data)
+                .addOnSuccessListener(documentReference1 -> {
+                    Request.sentRequests.add(new Request(documentReference1.getId(), User.currentUser.getUserId(), userId, Request.Status.PENDING, timestamp));
+                    Toast.makeText(context, "Request successfully sent", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, e);
+                    Toast.makeText(context, "Request fail to sent", Toast.LENGTH_SHORT).show();
+                });
     }
 
     static void detachAllListener(){

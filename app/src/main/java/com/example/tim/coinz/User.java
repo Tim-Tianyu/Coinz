@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -137,30 +139,52 @@ public class User{
                         return;
                     }
 
+                    // get the list of friend that have deletion on their document
+                    ArrayList<String> friendIdListWithDocumentChange = new ArrayList<>();
                     for (DocumentChange dc : Objects.requireNonNull(queryDocumentSnapshots).getDocumentChanges()){
                         if (dc.getType().equals(DocumentChange.Type.REMOVED)) {
-                            User user = findFriendById(dc.getDocument().getId());
-                            if (user == null) {
-                                Log.w(TAG, "delete friend not found");
-                                return;
-                            }
-                            int position = friends.indexOf(user);
-                            // adapter will be null if it don't have focus currently
-                            FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
-                            if (adapter != null) {
-                                // update adapter as it has focus
-                                adapter.removeItem(position);
-                            } else {
-                                friends.remove(position);
-                            }
-                            // adapter will be null if it don't have focus currently
-                            FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
-                            if (friendSelectListAdapter != null) {
-                                // update adapter as it has focus
-                                friendSelectListAdapter.removeItemById(user.userId);
-                            }
+                            friendIdListWithDocumentChange.add(dc.getDocument().getId());
                         }
                     }
+
+                    // check if current user's friend list still have these friends
+                    db.collection("USER").document(User.currentUser.getUserId()).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                List<DocumentReference> documentList = (List<DocumentReference>) documentSnapshot.get("FriendList");
+
+                                // get current friend list
+                                ArrayList<String> friendIdList = new ArrayList<>();
+                                for (DocumentReference documentReference : Objects.requireNonNull(documentList)){
+                                    friendIdList.add(documentReference.getId());
+                                }
+
+                                for (String friendId : friendIdListWithDocumentChange) {
+                                    // if don't have that friend in current friend update local friend list (remove that friend)
+                                    if ( !friendIdList.contains(friendId)) {
+                                        User user = findFriendById(friendId);
+                                        if (user == null) {
+                                            Log.w(TAG, "delete friend not found");
+                                            return;
+                                        }
+                                        int position = friends.indexOf(user);
+                                        // adapter will be null if it don't have focus currently
+                                        FriendListAdapter adapter = FriendListAdapter.getCurrentAdapter();
+                                        if (adapter != null) {
+                                            // update adapter as it has focus
+                                            adapter.removeItem(position);
+                                        } else {
+                                            friends.remove(position);
+                                        }
+                                        // adapter will be null if it don't have focus currently
+                                        FriendSelectListAdapter friendSelectListAdapter = FriendSelectListAdapter.getCurrentAdapter();
+                                        if (friendSelectListAdapter != null) {
+                                            // update adapter as it has focus
+                                            friendSelectListAdapter.removeItemById(user.userId);
+                                        }
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(e1 -> Log.w(TAG, e1));
                 });
     }
 

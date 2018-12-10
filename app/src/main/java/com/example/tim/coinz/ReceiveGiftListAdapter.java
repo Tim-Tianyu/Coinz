@@ -1,5 +1,6 @@
 package com.example.tim.coinz;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Gift gift = giftList.get(i);
@@ -58,7 +60,7 @@ public class ReceiveGiftListAdapter extends RecyclerView.Adapter<ReceiveGiftList
         myViewHolder.btnReceive.setOnClickListener(v -> {
             // receive gift
             int position = myViewHolder.getAdapterPosition();
-            Bank.theBank.receiveGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
+            Bank.theBank.collectGift(ReceiveGiftListAdapter.this, giftList.get(position), position);
         });
     }
 

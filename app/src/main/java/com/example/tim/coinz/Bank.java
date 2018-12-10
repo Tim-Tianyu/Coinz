@@ -105,8 +105,8 @@ public class Bank {
         return true;
     }
 
-    void receiveGift(ReceiveGiftListAdapter current, Gift gift, int position) {
-        // update firestore when trying to receive gift
+    void collectGift(ReceiveGiftListAdapter current, Gift gift, int position) {
+        // update firestore when trying to collect gift
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("GIFT").document(gift.getGiftId()).update("IsReceived", true).addOnCompleteListener(task -> {
             if (task.isSuccessful()){

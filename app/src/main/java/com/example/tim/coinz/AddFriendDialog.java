@@ -60,26 +60,7 @@ public class AddFriendDialog extends Dialog {
                 return;
             }
             // add friend request to firestore
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            Map<String, Object> data = new HashMap<>();
-            CollectionReference collectionReference = db.collection("USER");
-            DocumentReference documentReference = collectionReference.document(User.currentUser.getUserId());
-            documentReference.getPath();
-
-            Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime());
-            data.put("Status", Request.PENDING);
-            data.put("Time", timestamp);
-            data.put("Sender", collectionReference.document(User.currentUser.getUserId()));
-            data.put("Receiver", collectionReference.document(userId));
-            db.collection("FRIEND_REQUEST").add(data)
-                    .addOnSuccessListener(documentReference1 -> {
-                        Request.sentRequests.add(new Request(documentReference1.getId(), User.currentUser.getUserId(), userId, Request.Status.PENDING, timestamp));
-                        Toast.makeText(context, "Request successfully sent", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w(TAG, e);
-                        Toast.makeText(context, "Request fail to sent", Toast.LENGTH_SHORT).show();
-                    });
+            Request.sendNewRequest(context, userId);
         });
 
         Button btnCopy = findViewById(R.id.add_friend_dialog_btn_copy);
