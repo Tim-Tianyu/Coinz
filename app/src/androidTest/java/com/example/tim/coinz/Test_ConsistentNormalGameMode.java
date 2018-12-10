@@ -58,7 +58,7 @@ public class Test_ConsistentNormalGameMode {
         }
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.editEmail),
+                allOf(withId(R.id.activity_main_et_email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -69,7 +69,7 @@ public class Test_ConsistentNormalGameMode {
 
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang."),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang."),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -79,7 +79,7 @@ public class Test_ConsistentNormalGameMode {
         appCompatEditText2.perform(replaceText("tim.wang.tianyu"));
 
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang.tianyu"),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang.tianyu"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -89,7 +89,7 @@ public class Test_ConsistentNormalGameMode {
         appCompatEditText3.perform(closeSoftKeyboard());
 
         ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang.tianyu"),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang.tianyu"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -99,7 +99,7 @@ public class Test_ConsistentNormalGameMode {
         appCompatEditText4.perform(replaceText("tim.wang.tianyu@gmail.com"));
 
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang.tianyu@gmail.com"),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang.tianyu@gmail.com"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -109,7 +109,7 @@ public class Test_ConsistentNormalGameMode {
         appCompatEditText5.perform(closeSoftKeyboard());
 
         ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.editPassword),
+                allOf(withId(R.id.activity_main_et_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -119,7 +119,7 @@ public class Test_ConsistentNormalGameMode {
         appCompatEditText6.perform(replaceText("timtim"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -188,7 +188,7 @@ public class Test_ConsistentNormalGameMode {
         }
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

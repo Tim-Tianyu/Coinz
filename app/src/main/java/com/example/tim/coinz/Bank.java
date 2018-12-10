@@ -124,6 +124,12 @@ public class Bank {
         syncWithLocal();
     }
 
+    void sentGiftReceivedBonus(Gift gift){
+        Double bonus = 0.1;
+        valueGold += gift.getValue() * bonus;
+        syncWithLocal();
+    }
+
     private void syncWithLocal() {
         // update local db
         FeedReaderDbHelper mDbHelper = LoadActivity.mDbHelper;

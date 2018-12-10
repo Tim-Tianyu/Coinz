@@ -109,11 +109,12 @@ public class Gift{
                         if (dc.getType().equals(DocumentChange.Type.MODIFIED)) {
                             QueryDocumentSnapshot snapshot = dc.getDocument();
                             String giftId = snapshot.getId();
-                            Gift newGift = findGiftByGiftId(sentGifts, giftId);
-                            if (newGift == null){
+                            Gift sentGift = findGiftByGiftId(sentGifts, giftId);
+                            if (sentGift == null){
                                 Log.w(TAG, "sent gift not found");
                             } else {
-                                sentGifts.remove(newGift);
+                                Bank.theBank.sentGiftReceivedBonus(sentGift);
+                                sentGifts.remove(sentGift);
                             }
                         }
                     }

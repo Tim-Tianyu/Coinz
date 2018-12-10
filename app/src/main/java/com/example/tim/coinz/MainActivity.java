@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         mDbHelper = new FeedReaderDbHelper(MainActivity.this);
-        Button btnLogIn = findViewById(R.id.btnLogIn);
-        Button btnSignUp = findViewById(R.id.btnSignUp);
-        editEmail = findViewById(R.id.editEmail);
-        editPassword = findViewById(R.id.editPassword);
+        Button btnLogIn = findViewById(R.id.activity_main_btn_log_in);
+        Button btnSignUp = findViewById(R.id.activity_main_btn_sign_up);
+        editEmail = findViewById(R.id.activity_main_et_email);
+        editPassword = findViewById(R.id.activity_main_et_password);
         btnLogIn.setOnClickListener(v -> onClickLogIn());
         btnSignUp.setOnClickListener(v -> {
             // user want create new account

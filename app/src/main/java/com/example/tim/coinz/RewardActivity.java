@@ -1,5 +1,6 @@
 package com.example.tim.coinz;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,7 +10,7 @@ import android.widget.Toast;
 import java.util.Locale;
 import java.util.Objects;
 
-public class rewardActivity extends AppCompatActivity {
+public class RewardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +22,16 @@ public class rewardActivity extends AppCompatActivity {
         btnCollect.setOnClickListener(v -> {
             // try to collect reward
             if (Reward.currentLevel == Reward.LEVEL_END) {
-                Toast.makeText(rewardActivity.this, "No more rewards to collect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RewardActivity.this, "No more rewards to collect", Toast.LENGTH_SHORT).show();
                 return;
             }
             Reward currentReward = Reward.getCurrentReward();
             if (Objects.requireNonNull(currentReward).getThresholdDistance() > User.walkingDistance) {
-                Toast.makeText(rewardActivity.this, "Not reaching the target distance", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RewardActivity.this, "Not reaching the target distance", Toast.LENGTH_SHORT).show();
             } else {
                 // success collect reward
                 Bank.theBank.collectReward(currentReward);
-                Toast.makeText(rewardActivity.this, String.format(Locale.UK, "Collect %1$.2f gold", currentReward.getRewardValue()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RewardActivity.this, String.format(Locale.UK, "Collect %1$.2f gold", currentReward.getRewardValue()), Toast.LENGTH_SHORT).show();
                 Reward.nextLevel();
                 refreshExplanationText();
             }
@@ -43,6 +44,7 @@ public class rewardActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    @SuppressLint("SetTextI18n")
     private void refreshExplanationText(){
         // change txtExplanation based on current reward and walking distance
         TextView txtExplanation = findViewById(R.id.activity_reward_text_explanation);

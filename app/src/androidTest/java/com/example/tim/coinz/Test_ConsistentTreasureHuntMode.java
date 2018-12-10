@@ -58,7 +58,7 @@ public class Test_ConsistentTreasureHuntMode {
         }
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.editEmail),
+                allOf(withId(R.id.activity_main_et_email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -69,7 +69,7 @@ public class Test_ConsistentTreasureHuntMode {
 
 
         ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.editPassword),
+                allOf(withId(R.id.activity_main_et_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -80,7 +80,7 @@ public class Test_ConsistentTreasureHuntMode {
 
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -149,7 +149,7 @@ public class Test_ConsistentTreasureHuntMode {
         }
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

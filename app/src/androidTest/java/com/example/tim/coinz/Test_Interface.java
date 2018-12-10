@@ -22,7 +22,6 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -59,29 +58,20 @@ public class Test_Interface {
             e.printStackTrace();
         }
 
-        ViewInteraction textView = onView(withId(R.id.textView2));
-        textView.check(matches(withText("E-mail:")));
-
-        ViewInteraction editText = onView(withId(R.id.editEmail));
+        ViewInteraction editText = onView(withId(R.id.activity_main_et_email));
         editText.check(matches(withText("")));
 
-        ViewInteraction textView2 = onView(withId(R.id.textView));
-        textView2.check(matches(withText("Password:")));
-
-        ViewInteraction textView3 = onView(withId(R.id.textView));
-        textView3.check(matches(withText("Password:")));
-
-        ViewInteraction editText2 = onView(withId(R.id.editPassword));
+        ViewInteraction editText2 = onView(withId(R.id.activity_main_et_password));
         editText2.check(matches(withText("")));
 
-        ViewInteraction button = onView(withId(R.id.btnLogIn));
+        ViewInteraction button = onView(withId(R.id.activity_main_btn_log_in));
         button.check(matches(isDisplayed()));
 
-        ViewInteraction button2 = onView(withId(R.id.btnSignUp));
+        ViewInteraction button2 = onView(withId(R.id.activity_main_btn_sign_up));
         button2.check(matches(isDisplayed()));
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnSignUp), withText(" Sign Up"),
+                allOf(withId(R.id.activity_main_btn_sign_up), withText("Sign up"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -89,9 +79,6 @@ public class Test_Interface {
                                 1),
                         isDisplayed()));
         appCompatButton.perform(click());
-
-        ViewInteraction textView4 = onView(withId(R.id.textView5));
-        textView4.check(matches(withText("Sign Up")));
 
         ViewInteraction editText3 = onView(withId(R.id.sign_up_dialog_et_email));
         editText3.check(matches(isDisplayed()));
@@ -128,7 +115,7 @@ public class Test_Interface {
         }
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.editEmail),
+                allOf(withId(R.id.activity_main_et_email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -138,7 +125,7 @@ public class Test_Interface {
         appCompatEditText.perform(replaceText("tim.wang.tianyu@gmail.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.editPassword),
+                allOf(withId(R.id.activity_main_et_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -148,7 +135,7 @@ public class Test_Interface {
         appCompatEditText2.perform(replaceText("timtim"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

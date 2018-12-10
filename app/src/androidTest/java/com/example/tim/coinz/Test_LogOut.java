@@ -58,7 +58,7 @@ public class Test_LogOut {
         }
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.editEmail),
+                allOf(withId(R.id.activity_main_et_email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -69,7 +69,7 @@ public class Test_LogOut {
 
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang.ti"),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang.ti"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -79,7 +79,7 @@ public class Test_LogOut {
         appCompatEditText2.perform(replaceText("tim.wang.tianyu@gmail.com"));
 
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.editEmail), withText("tim.wang.tianyu@gmail.com"),
+                allOf(withId(R.id.activity_main_et_email), withText("tim.wang.tianyu@gmail.com"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -88,17 +88,8 @@ public class Test_LogOut {
                         isDisplayed()));
         appCompatEditText3.perform(closeSoftKeyboard());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.editPassword),
+                allOf(withId(R.id.activity_main_et_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -108,7 +99,7 @@ public class Test_LogOut {
         appCompatEditText4.perform(replaceText("timtim"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.editPassword), withText("timtim"),
+                allOf(withId(R.id.activity_main_et_password), withText("timtim"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -118,7 +109,7 @@ public class Test_LogOut {
         appCompatEditText5.perform(pressImeActionButton());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -192,16 +183,16 @@ public class Test_LogOut {
             e.printStackTrace();
         }
 
-        ViewInteraction editText = onView(withId(R.id.editEmail));
+        ViewInteraction editText = onView(withId(R.id.activity_main_et_email));
         editText.check(matches(isDisplayed()));
 
-        ViewInteraction editText2 = onView(withId(R.id.editPassword));
+        ViewInteraction editText2 = onView(withId(R.id.activity_main_et_password));
         editText2.check(matches(isDisplayed()));
 
-        ViewInteraction button = onView(withId(R.id.btnLogIn));
+        ViewInteraction button = onView(withId(R.id.activity_main_btn_log_in));
         button.check(matches(isDisplayed()));
 
-        ViewInteraction button2 = onView(withId(R.id.btnSignUp));
+        ViewInteraction button2 = onView(withId(R.id.activity_main_btn_sign_up));
         button2.check(matches(isDisplayed()));
     }
 

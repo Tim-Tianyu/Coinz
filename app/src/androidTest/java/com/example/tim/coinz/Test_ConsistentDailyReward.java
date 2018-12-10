@@ -59,7 +59,7 @@ public class Test_ConsistentDailyReward {
         }
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.editEmail),
+                allOf(withId(R.id.activity_main_et_email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -69,7 +69,7 @@ public class Test_ConsistentDailyReward {
         appCompatEditText.perform(replaceText("tim.wang.tianyu@gmail.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.editPassword),
+                allOf(withId(R.id.activity_main_et_password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -79,7 +79,7 @@ public class Test_ConsistentDailyReward {
         appCompatEditText2.perform(replaceText("timtim"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -228,7 +228,7 @@ public class Test_ConsistentDailyReward {
         }
 
         ViewInteraction appCompatButton8 = onView(
-                allOf(withId(R.id.btnLogIn), withText("LOG IN"),
+                allOf(withId(R.id.activity_main_btn_log_in), withText("LOG IN"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

@@ -26,10 +26,10 @@ public class CoinListAdapter extends RecyclerView.Adapter<CoinListAdapter.MyView
 
         MyViewHolder(View v) {
             super(v);
-            mTextView = itemView.findViewById(R.id.message);
-            mImageView = itemView.findViewById(R.id.coin_icon);
-            btnBank = itemView.findViewById(R.id.activity_map_btn_bank);
-            btnGift = itemView.findViewById(R.id.btnGift);
+            mTextView = itemView.findViewById(R.id.coin_list_row_txt_message);
+            mImageView = itemView.findViewById(R.id.coin_list_row_img__icon);
+            btnBank = itemView.findViewById(R.id.coin_list_row_btn_deposit);
+            btnGift = itemView.findViewById(R.id.coin_list_row_btn_gift);
         }
     }
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="309dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,7 +10,7 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Paste friend's UID here:"
+        android:text="@string/paste_instruction"
         android:textSize="18sp"/>
 
     <LinearLayout
@@ -26,13 +25,14 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:layout_weight="0.5"
-            android:autofillHints="UID"/>
+            android:hint="@string/user_id"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/add_friend_dialog_btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:text="@string/send" />
 
     </LinearLayout>
 
@@ -49,14 +49,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="or: "
+            android:text="@string/or"
             android:textSize="18sp"/>
 
         <Button
             android:id="@+id/add_friend_dialog_btn_copy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Copy your own UID" />
+            android:text="@string/copy_instruction" />
     </LinearLayout>
 
     <View
@@ -67,7 +67,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tips: To add friends, use your friends' UID to send them requests or you can copy your own UID, send to your friends through social network and let them send requests to you!" />
+        android:text="@string/add_friend_tips" />
 
     <View
         android:layout_width="match_parent"
@@ -78,5 +78,5 @@
         android:id="@+id/add_friend_dialog_btn_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Close" />
+        android:text="@string/close" />
 </LinearLayout>

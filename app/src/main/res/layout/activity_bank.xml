@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_24px" />
+            app:srcCompat="@drawable/ic_baseline_room_24px"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/activity_bank_txt_gold_value"
@@ -37,7 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_dolr" />
+            app:srcCompat="@drawable/ic_baseline_room_dolr"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/activity_bank_txt_dolr_value"
@@ -50,7 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_penny" />
+            app:srcCompat="@drawable/ic_baseline_room_penny"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/activity_bank_txt_penny_value"
@@ -63,7 +66,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_quid" />
+            app:srcCompat="@drawable/ic_baseline_room_quid"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/activity_bank_txt_quid_value"
@@ -76,7 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_room_shil" />
+            app:srcCompat="@drawable/ic_baseline_room_shil"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/activity_bank_txt_shil_value"
@@ -134,7 +139,8 @@
                 android:layout_height="wrap_content"
                 tools:layout_editor_absoluteX="79dp"
                 tools:layout_editor_absoluteY="188dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
                 <RadioButton
                     android:id="@+id/activity_bank_rb_dolr"
                     android:layout_width="wrap_content"

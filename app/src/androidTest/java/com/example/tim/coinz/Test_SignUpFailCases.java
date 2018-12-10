@@ -51,7 +51,7 @@ public class Test_SignUpFailCases {
         }
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnSignUp), withText(" Sign Up"),
+                allOf(withId(R.id.activity_main_btn_sign_up), withText("Sign up"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

@@ -93,7 +93,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .create().show();
         });
         Button btnReward = findViewById(R.id.activity_map_btn_reward);
-        btnReward.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, rewardActivity.class)));
+        btnReward.setOnClickListener(v -> startActivity(new Intent(MapActivity.this, RewardActivity.class)));
 
         permissionsManager = new PermissionsManager(new PermissionsListener() {
             @Override
